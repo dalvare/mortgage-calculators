@@ -1,0 +1,22 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADecimal_002EDecCalc_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FLibrary_003FApplication_0020Support_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fb927513cb479598e1a1d9d8b45492b2c5628795da7a70860599667c73e7c8a_003FDecimal_002EDecCalc_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AEqualityAsserts_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FLibrary_003FApplication_0020Support_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fad8b2779652854276d03ec153d51377686c7193799d1688e119272770d0cf_003FEqualityAsserts_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ANumber_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FLibrary_003FApplication_0020Support_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F07ff290e6d5543ad8b55b8b23d62e25fe22400_003F9a_003F484388f5_003FNumber_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f8e1ddb2_002Dd449_002D4e50_002D97f1_002Dabdd93072019/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from MonthlyPaymentCalcualtorTests.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.MonthlyPaymentCalculatorTests.Calculate_ReturnsCorrectMonthlyPayment_NoPmi&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.AffordabilityCalculatorTests.Calculate_ReturnsExpectedResult&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.AffordabilityCalculatorTests.Calculate_WithValidRequest_ReturnsExpectedResults&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.AffordabilityCalculator2Tests.Calculate_ReturnsExpectedResult&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.AffordabilityCalculatorTests&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.RefinanceCalculatorTests.Calculate_ShouldReturnCorrectResponse_WhenValidRequestProvided&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.MonthlyPaymentCalculatorTests.Calculate_ValidRequest&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.MonthlyPaymentCalculatorTests.Calculate_InvalidRequest&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.LoanComparisonCalculatorTests.Calculate_ReturnsCorrectTotalSavings_WhenSecondLoanIsCheaper&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.MonthlyPaymentCalculatorTests&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9F5236E0-7368-427A-A9E3-05313BA3321E::net9.0::CalculatorsTests.RefinanceCalculatorTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+    &lt;ProjectFile&gt;9F5236E0-7368-427A-A9E3-05313BA3321E/f:LoanComparisonCalculatorTests.cs&lt;/ProjectFile&gt;
+  &lt;/Or&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -1,0 +1,12 @@
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/bin/Debug/net9.0/Calculators.deps.json
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/bin/Debug/net9.0/Calculators.dll
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/bin/Debug/net9.0/Calculators.pdb
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.GeneratedMSBuildEditorConfig.editorconfig
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.AssemblyInfoInputs.cache
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.AssemblyInfo.cs
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.csproj.CoreCompileInputs.cache
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.dll
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/refint/Calculators.dll
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.pdb
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/ref/Calculators.dll
+/Users/dalvare/RiderProjects/MortgageCalculators/Calculators/obj/Debug/net9.0/Calculators.csproj.AssemblyReference.cache
