@@ -1,13 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageId>MortgageCalculators</PackageId>
+        <PackageVersion>1.0.0-rc1</PackageVersion>
+        <Authors>dalvare</Authors>
+        <Company>JerseyDev</Company>
+        <Product>Mortgage Calculators</Product>
+        <Description>A collection of C# mortgage calculators</Description>
+        <PackageProjectUrl>https://github.com/dalvare/mortgage-calculators</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/dalvare/mortgage-calculators</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>mortgage;calculator;affordability;loan;comparison;refinance;finance;real-estate</PackageTags>
+        <PackageReleaseNotes>Includes affordability calculator, loan comparison calculator, and refinance calculator with FluentValidation support.</PackageReleaseNotes>
+
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     </PropertyGroup>
-
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="12.0.0" />
+        <None Include="..\README.md" Pack="true" PackagePath="" />
     </ItemGroup>
-
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="12.0.0" />
+    </ItemGroup>
 </Project>
