@@ -1,6 +1,6 @@
 # Mortgage Calculators
 
-A collection of C# calculators for mortgage affordability, loan comparison, and refinancing, with robust input validation using [FluentValidation](https://fluentvalidation.net/).
+A collection of C# calculators for mortgage calculators using [FluentValidation](https://fluentvalidation.net/).
 
 ## Features
 
