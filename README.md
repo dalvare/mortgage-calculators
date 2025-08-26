@@ -28,7 +28,7 @@ A collection of C# mortgage calculators, with input validation using [FluentVali
 1. **Register Calculators** (for example, in your DI container if using ASP.NET Core):
 
     ```csharp
-    using Calculators.Extensions;
+    using MortgageCalculators.Extensions;
 
     builder.Services.AddMortgageCalcuators();
     ```
@@ -45,8 +45,8 @@ A collection of C# mortgage calculators, with input validation using [FluentVali
     ```
 ## Usage
 ```csharp
-using Calculators;
-using Calculators.Models;
+using MortgageCalculators;
+using MortgageCalculators.Models;
 
 var request = new MonthlyPaymentRequest
 {

@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculators", "Calculators\Calculators.csproj", "{2F6ED581-9C1E-4595-89ED-0DABE2529C0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortgageCalculators", "MortgageCalculators\MortgageCalculators.csproj", "{2F6ED581-9C1E-4595-89ED-0DABE2529C0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorsTests", "CalculatorsTests\CalculatorsTests.csproj", "{9F5236E0-7368-427A-A9E3-05313BA3321E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MortgageCalculatorsTests", "MortgageCalculatorsTests\MortgageCalculatorsTests.csproj", "{9F5236E0-7368-427A-A9E3-05313BA3321E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
