@@ -4,8 +4,14 @@ using FluentValidation;
 
 namespace MortgageCalculators.Validation.Validators;
 
+/// <summary>
+/// Validation rules for individual loan scenarios in a loan comparison request.
+/// </summary>
 public class LoanComparisonRequestLoanValidator : AbstractValidator<LoanComparisonRequestLoan>
 {
+    /// <summary>
+    /// Initializes validation rules for loan pricing, LTV inputs, and PMI parameters.
+    /// </summary>
     public LoanComparisonRequestLoanValidator()
     {
         RuleFor(x => x.InterestRate).MustBeValidInterestRate();

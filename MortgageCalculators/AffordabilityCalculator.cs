@@ -4,8 +4,20 @@ using MortgageCalculators.Models;
 
 namespace MortgageCalculators;
 
+/// <summary>
+/// Provides methods to calculate mortgage affordability based on user income, expenses, and loan parameters.
+/// </summary>
 public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<AffordabilityRequest, AffordabilityResponse>
 {
+    /// <summary>
+    /// Calculates the maximum affordable loan amount, home value, and related monthly payments
+    /// based on the provided affordability request parameters.
+    /// </summary>
+    /// <param name="request">The affordability request containing income, expenses, and loan details.</param>
+    /// <returns>
+    /// An <see cref="AffordabilityResponse"/> with calculated loan amount, down payment, home value,
+    /// monthly payments, and amortization schedule.
+    /// </returns>
     public AffordabilityResponse Calculate(AffordabilityRequest request)
     {
         var monthlyTaxes = request.AnnualTaxes / 12;

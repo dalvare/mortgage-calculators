@@ -4,8 +4,14 @@ using FluentValidation;
 
 namespace MortgageCalculators.Validation.Validators;
 
+/// <summary>
+/// Validation rules for the proposed refinance loan details and pricing inputs.
+/// </summary>
 public class RefinanceRefinanceLoanRequestValidator : RefinanceLoanDetailsRequestValidator<RefinanceRefinanceLoanRequest>
 {
+    /// <summary>
+    /// Initializes validation for points, origination, closing costs, and holding period.
+    /// </summary>
     public RefinanceRefinanceLoanRequestValidator()
     {
         RuleFor(x => x.Points).MustBeValidPoints();

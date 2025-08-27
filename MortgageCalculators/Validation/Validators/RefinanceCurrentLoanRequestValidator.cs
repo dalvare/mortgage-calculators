@@ -4,8 +4,14 @@ using FluentValidation;
 
 namespace MortgageCalculators.Validation.Validators;
 
+/// <summary>
+/// Validation rules for current loan details when evaluating a refinance.
+/// </summary>
 public class RefinanceCurrentLoanRequestValidator : RefinanceLoanDetailsRequestValidator<RefinanceCurrentLoanRequest>
 {
+    /// <summary>
+    /// Initializes validation ensuring valid amounts and months paid do not exceed loan term.
+    /// </summary>
     public RefinanceCurrentLoanRequestValidator()
     {
         RuleFor(x => x.OriginalLoanAmount).MustBeValidLoanAmount();

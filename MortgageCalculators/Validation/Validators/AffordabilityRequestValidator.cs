@@ -4,8 +4,14 @@ using FluentValidation;
 
 namespace MortgageCalculators.Validation.Validators;
 
+/// <summary>
+/// Validation rules for affordability calculation requests.
+/// </summary>
 public class AffordabilityRequestValidator : AbstractValidator<AffordabilityRequest>
 {
+    /// <summary>
+    /// Initializes validation rules ensuring inputs are within acceptable ranges and consistent.
+    /// </summary>
     public AffordabilityRequestValidator()
     {
         RuleFor(x => x.TotalMonthlyIncome)

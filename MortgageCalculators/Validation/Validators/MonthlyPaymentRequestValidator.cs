@@ -4,8 +4,14 @@ using FluentValidation;
 
 namespace MortgageCalculators.Validation.Validators;
 
+/// <summary>
+/// Validation rules for monthly payment calculation requests.
+/// </summary>
 public class MonthlyPaymentRequestValidator : AbstractValidator<MonthlyPaymentRequest>
 {
+    /// <summary>
+    /// Initializes validation ensuring amounts, rates, term, and LTV-related constraints.
+    /// </summary>
     public MonthlyPaymentRequestValidator()
     {
         RuleFor(x => x.LoanAmount).MustBeValidLoanAmount();
