@@ -12,11 +12,11 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Calculate_ReturnsCorrectTotalSavings_WhenSecondLoanIsCheaper()
     {
-        var request = new LoanComparisonRequest
+        var request = new LoanComparisonCalculatorRequest
         {
             LoanAmount = 200000,
             Loans = [
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 5,
                     Term = 30,
@@ -26,7 +26,7 @@ public class LoanComparisonCalculatorTests
                     HomeValue = 250000,
                     Pmi = 0
                 },
-                new LoanComparisonRequestLoan()
+                new LoanComparisonCalculatorLoanRequest()
                 {
                     InterestRate = 4,
                     Term = 30,
@@ -49,11 +49,11 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Calculate_ReturnsZeroTotalSavings_WhenLoansHaveIdenticalTotalPayments()
     {
-        var request = new LoanComparisonRequest
+        var request = new LoanComparisonCalculatorRequest
         {
             LoanAmount = 100000,
             Loans = [
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 5,
                     Term = 30,
@@ -63,7 +63,7 @@ public class LoanComparisonCalculatorTests
                     HomeValue = 120000,
                     Pmi = 0
                 },
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 5,
                     Term = 30,
@@ -85,7 +85,7 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Validate_ValidLoanComparisonRequestLoan()
     {
-        var loan = new LoanComparisonRequestLoan
+        var loan = new LoanComparisonCalculatorLoanRequest
         {
             InterestRate = 5.0m,
             Term = 30,
@@ -104,7 +104,7 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Validate_InvalidLoanComparisonRequestLoan()
     {
-        var loan = new LoanComparisonRequestLoan
+        var loan = new LoanComparisonCalculatorLoanRequest
         {
             InterestRate = 0.0m, // Invalid
             Term = 0, // Invalid
@@ -127,11 +127,11 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Validate_ValidLoanComparisonRequest_WithTwoValidLoans()
     {
-        var request = new LoanComparisonRequest
+        var request = new LoanComparisonCalculatorRequest
         {
             LoanAmount = 150000,
             Loans = [
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 4.5m,
                     Term = 30,
@@ -141,7 +141,7 @@ public class LoanComparisonCalculatorTests
                     HomeValue = 200000.0m,
                     Pmi = 0.5m
                 },
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 5.0m,
                     Term = 15,
@@ -161,11 +161,11 @@ public class LoanComparisonCalculatorTests
     [Fact]
     public void Validate_InvalidLoanComparisonRequest_WithSingleValidLoan()
     {
-        var request = new LoanComparisonRequest
+        var request = new LoanComparisonCalculatorRequest
         {
             LoanAmount = 100000,
             Loans = [
-                new LoanComparisonRequestLoan
+                new LoanComparisonCalculatorLoanRequest
                 {
                     InterestRate = 3.75m,
                     Term = 20,

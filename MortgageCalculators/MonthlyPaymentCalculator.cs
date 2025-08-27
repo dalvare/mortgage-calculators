@@ -7,30 +7,30 @@ namespace MortgageCalculators;
 /// <summary>
 /// Calculates a detailed monthly mortgage payment breakdown, including taxes, insurance, and PMI.
 /// </summary>
-public class MonthlyPaymentCalculator : MortgageCalculator, IMortgageCalculator<MonthlyPaymentRequest, MonthlyPaymentResponse>
+public class MonthlyPaymentCalculator : MortgageCalculator, IMortgageCalculator<MonthlyPaymentCalculatorRequest, MonthlyPaymentCalculatorResponse>
 {
 	/// <summary>
 	/// Computes monthly payment components and builds an amortization schedule with PMI tracking.
 	/// </summary>
-	/// <param name="request">Monthly payment inputs such as loan amount, rate, term, and escrow amounts.</param>
+	/// <param name="calculatorRequest">Monthly payment inputs such as loan amount, rate, term, and escrow amounts.</param>
 	/// <returns>A response containing monthly totals and an amortization schedule.</returns>
-	public MonthlyPaymentResponse Calculate(MonthlyPaymentRequest request)
+	public MonthlyPaymentCalculatorResponse Calculate(MonthlyPaymentCalculatorRequest calculatorRequest)
 	{
-		var loanToValue =  CalculateLoanToValue(request.LoanAmount, request.HomeValue);
-		var pmi = DoesLoanHavePmi(loanToValue, request.Pmi) ? CalculatePmiAnnualAmount(request.LoanAmount, request.Pmi) : 0;
+		var loanToValue =  CalculateLoanToValue(calculatorRequest.LoanAmount, calculatorRequest.HomeValue);
+		var pmi = DoesLoanHavePmi(loanToValue, calculatorRequest.Pmi) ? CalculatePmiAnnualAmount(calculatorRequest.LoanAmount, calculatorRequest.Pmi) : 0;
 		var monthlyPmi = pmi / 12;
-		var monthlyTaxes = request.AnnualTaxes / 12;
-		var monthlyInsurance = request.AnnualInsurance / 12;
-		var monthlyPrincipalAndInterest = CalculatePayment(request.LoanAmount, request.InterestRate, request.Term);
+		var monthlyTaxes = calculatorRequest.AnnualTaxes / 12;
+		var monthlyInsurance = calculatorRequest.AnnualInsurance / 12;
+		var monthlyPrincipalAndInterest = CalculatePayment(calculatorRequest.LoanAmount, calculatorRequest.InterestRate, calculatorRequest.Term);
 		decimal[] payments = [ monthlyPrincipalAndInterest, monthlyTaxes, monthlyInsurance, monthlyPmi ];
 		var monthlyPayment = payments.Sum();
 		var monthsWithPmi = 0;
 
-		var amortization = CalculateAmortization(request.LoanAmount, request.InterestRate, request.Term * 12, DateTime.Now, request.HomeValue, request.Pmi);
+		var amortization = CalculateAmortization(calculatorRequest.LoanAmount, calculatorRequest.InterestRate, calculatorRequest.Term * 12, DateTime.Now, calculatorRequest.HomeValue, calculatorRequest.Pmi);
 
 		foreach (var (schedule, i) in amortization.Schedule.Select((s, i) => (s, i)))
 		{
-			var ltv = CalculateLoanToValue(schedule.Balance, request.HomeValue);
+			var ltv = CalculateLoanToValue(schedule.Balance, calculatorRequest.HomeValue);
 			if (ltv >= 80)
 			{
 				amortization.Schedule[i].Pmi = monthlyPmi;
@@ -42,7 +42,7 @@ public class MonthlyPaymentCalculator : MortgageCalculator, IMortgageCalculator<
 			}
 		}
 
-		return new MonthlyPaymentResponse
+		return new MonthlyPaymentCalculatorResponse
 		{
 			MonthlyPayment = monthlyPayment.ToDollar(),
 			MonthlyPrincipalAndInterest = monthlyPrincipalAndInterest.ToDollar(),

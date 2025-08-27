@@ -20,15 +20,15 @@ public static class ServiceCollectionsExtension
 	public static IServiceCollection AddMortgageCalculators(
 		this IServiceCollection services)
 	{
-		services.TryAddScoped<IMortgageCalculator<AffordabilityRequest, AffordabilityResponse>, AffordabilityCalculator>();
-		services.TryAddScoped<IMortgageCalculator<LoanComparisonRequest, LoanComparisonResponse>, LoanComparisonCalculator>();
-		services.TryAddScoped<IMortgageCalculator<MonthlyPaymentRequest, MonthlyPaymentResponse>, MonthlyPaymentCalculator>();
-		services.TryAddScoped<IMortgageCalculator<RefinanceRequest, RefinanceResponse>, RefinanceCalculator>();
+		services.TryAddScoped<IMortgageCalculator<AffordabilityCalculatorRequest, AffordabilityCalculatorResponse>, AffordabilityCalculator>();
+		services.TryAddScoped<IMortgageCalculator<LoanComparisonCalculatorRequest, LoanComparisonCalculatorResponse>, LoanComparisonCalculator>();
+		services.TryAddScoped<IMortgageCalculator<MonthlyPaymentCalculatorRequest, MonthlyPaymentCalculatorResponse>, MonthlyPaymentCalculator>();
+		services.TryAddScoped<IMortgageCalculator<RefinanceCalculatorRequest, RefinanceCalculatorResponse>, RefinanceCalculator>();
 		
-		services.TryAddScoped<IValidator<AffordabilityRequest>, AffordabilityRequestValidator>();
-		services.TryAddScoped<IValidator<LoanComparisonRequest>, LoanComparisonRequestValidator>();
-		services.TryAddScoped<IValidator<MonthlyPaymentRequest>, MonthlyPaymentRequestValidator>();
-		services.TryAddScoped<IValidator<RefinanceRequest>, RefinanceRequestValidator>();
+		services.TryAddScoped<IValidator<AffordabilityCalculatorRequest>, AffordabilityRequestValidator>();
+		services.TryAddScoped<IValidator<LoanComparisonCalculatorRequest>, LoanComparisonRequestValidator>();
+		services.TryAddScoped<IValidator<MonthlyPaymentCalculatorRequest>, MonthlyPaymentRequestValidator>();
+		services.TryAddScoped<IValidator<RefinanceCalculatorRequest>, RefinanceRequestValidator>();
 		return services;
 	}
 }

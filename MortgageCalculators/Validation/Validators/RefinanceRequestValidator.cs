@@ -7,7 +7,7 @@ namespace MortgageCalculators.Validation.Validators;
 /// <summary>
 /// Validation rules for the refinance request, delegating to sub-validators.
 /// </summary>
-public class RefinanceRequestValidator : AbstractValidator<RefinanceRequest>
+public class RefinanceRequestValidator : AbstractValidator<RefinanceCalculatorRequest>
 {
     /// <summary>
     /// Initializes validation ensuring valid home value and nested models are validated.

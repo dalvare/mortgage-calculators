@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Input model for calculating mortgage affordability based on income, expenses, ratios, and costs.
 /// </summary>
-public class AffordabilityRequest
+public class AffordabilityCalculatorRequest
 {
 	/// <summary>
 	/// Borrower's gross total monthly income in dollars.

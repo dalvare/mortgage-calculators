@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Request model for computing a monthly mortgage payment breakdown.
 /// </summary>
-public class MonthlyPaymentRequest
+public class MonthlyPaymentCalculatorRequest
 {
     /// <summary>
     /// Loan principal amount.

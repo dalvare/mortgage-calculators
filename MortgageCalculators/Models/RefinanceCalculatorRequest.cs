@@ -75,7 +75,7 @@ public class TaxRatesRequest
 /// <summary>
 /// Request model for evaluating a mortgage refinance scenario.
 /// </summary>
-public class RefinanceRequest
+public class RefinanceCalculatorRequest
 {
     /// <summary>
     /// Current home value in dollars.

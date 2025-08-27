@@ -13,7 +13,7 @@ public class AffordabilityCalculatorTests
     public void Calculate_ShouldReturnCorrectResponse_WhenValidRequestProvidedWithoutPmi()
     {
         // Arrange
-        var request = new AffordabilityRequest
+        var request = new AffordabilityCalculatorRequest
         {
             Pmi = 0,
             AnnualTaxes = 2700,
@@ -40,7 +40,7 @@ public class AffordabilityCalculatorTests
     public void Calculate_ShouldReturnCorrectResponse_WhenValidRequestProvidedWithPmi()
     {
         // Arrange
-        var request = new AffordabilityRequest
+        var request = new AffordabilityCalculatorRequest
         {
             DownPayment = 20,
             InterestRate = 5,
@@ -68,7 +68,7 @@ public class AffordabilityCalculatorTests
     [Fact]
     public void Validate_ValidAffordabilityRequest()
     {
-        var request = new AffordabilityRequest
+        var request = new AffordabilityCalculatorRequest
         {
             Pmi = 0.5m,
             AnnualTaxes = 3000m,
@@ -89,7 +89,7 @@ public class AffordabilityCalculatorTests
     [Fact]
     public void Validate_InvalidAffordabilityRequest()
     {
-        var request = new AffordabilityRequest
+        var request = new AffordabilityCalculatorRequest
         {
             Pmi = 11.0m, // Invalid PMI
             AnnualTaxes = -100m, // Invalid taxes

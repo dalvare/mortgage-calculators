@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Response model summarizing the financial impact of refinancing.
 /// </summary>
-public class RefinanceResponse
+public class RefinanceCalculatorResponse
 {
     /// <summary>
     /// Metrics and amortization for the current (original) loan.

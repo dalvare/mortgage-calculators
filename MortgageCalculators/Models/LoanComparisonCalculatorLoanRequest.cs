@@ -2,7 +2,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Describes a single loan scenario for comparison, including pricing and PMI.
 /// </summary>
-public class LoanComparisonRequestLoan
+public class LoanComparisonCalculatorLoanRequest
 {
     /// <summary>
     /// Annual interest rate as a percentage (e.g., 6 for 6%).

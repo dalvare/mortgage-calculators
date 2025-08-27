@@ -7,7 +7,7 @@ namespace MortgageCalculators.Validation.Validators;
 /// <summary>
 /// Validation rules for individual loan scenarios in a loan comparison request.
 /// </summary>
-public class LoanComparisonRequestLoanValidator : AbstractValidator<LoanComparisonRequestLoan>
+public class LoanComparisonRequestLoanValidator : AbstractValidator<LoanComparisonCalculatorLoanRequest>
 {
     /// <summary>
     /// Initializes validation rules for loan pricing, LTV inputs, and PMI parameters.

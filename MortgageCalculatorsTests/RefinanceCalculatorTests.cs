@@ -11,7 +11,7 @@ public class RefinanceCalculatorTests
     public void Calculate_ShouldReturnCorrectResponse_WhenValidRequestProvided()
     {
         // Arrange
-        var request = new RefinanceRequest
+        var request = new RefinanceCalculatorRequest
         {
             HomeValue = 400000m,
             CurrentLoan = new RefinanceCurrentLoanRequest
@@ -50,7 +50,7 @@ public class RefinanceCalculatorTests
     public void Calculate_ShouldReturnCorrectResponse_WhenZeroYearsBeforeSaleProvided()
     {
         // Arrange
-        var request = new RefinanceRequest
+        var request = new RefinanceCalculatorRequest
         {
             HomeValue = 400000m,
             CurrentLoan = new RefinanceCurrentLoanRequest
@@ -89,7 +89,7 @@ public class RefinanceCalculatorTests
     public void Calculate_ShouldReturnCorrectResponse_WhenZeroMonthsPaidProvided()
     {
         // Arrange
-        var request = new RefinanceRequest
+        var request = new RefinanceCalculatorRequest
         {
             HomeValue = 400000m,
             CurrentLoan = new RefinanceCurrentLoanRequest

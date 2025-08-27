@@ -13,7 +13,7 @@ public class MonthlyPaymentCalculatorTests
     public void Calculate_ReturnsCorrectMonthlyPayment_NoPmi()
     {
         // Arrange
-        var request = new MonthlyPaymentRequest
+        var request = new MonthlyPaymentCalculatorRequest
         {
             LoanAmount = 280000m,
             HomeValue = 350000m, 
@@ -40,7 +40,7 @@ public class MonthlyPaymentCalculatorTests
     public void Calculate_ReturnsCorrectMonthlyPayment_WithPmi()
     {
         // Arrange
-        var request = new MonthlyPaymentRequest
+        var request = new MonthlyPaymentCalculatorRequest
         {
             LoanAmount = 300000m,
             HomeValue = 350000m,
@@ -69,7 +69,7 @@ public class MonthlyPaymentCalculatorTests
     [Fact]
     public void Validate_ValidRequest()
     {
-        var request = new MonthlyPaymentRequest
+        var request = new MonthlyPaymentCalculatorRequest
         {
             LoanAmount = 280000m,
             HomeValue = 350000m, 
@@ -87,7 +87,7 @@ public class MonthlyPaymentCalculatorTests
     [Fact]
     public void Validate_InvalidRequest()
     {
-        var request = new MonthlyPaymentRequest
+        var request = new MonthlyPaymentCalculatorRequest
         {
             LoanAmount = 280000m,
             HomeValue = 350000m, 

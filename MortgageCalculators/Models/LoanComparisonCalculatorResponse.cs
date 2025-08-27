@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Response model summarizing loan comparison results, including total savings and per-loan details.
 /// </summary>
-public class LoanComparisonResponse
+public class LoanComparisonCalculatorResponse
 {
     /// <summary>
     /// The compared loan amount used across all scenarios.
@@ -12,5 +12,5 @@ public class LoanComparisonResponse
     /// <summary>
     /// Collection of results for each compared loan scenario.
     /// </summary>
-    public List<LoanComparisonResponseLoan> Loans { get; set; } = [];
+    public List<LoanComparisonCalculatorLoanResponse> Loans { get; set; } = [];
 }

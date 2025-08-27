@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Per-loan comparison result including pricing components and amortization.
 /// </summary>
-public class LoanComparisonResponseLoan
+public class LoanComparisonCalculatorLoanResponse
 {
     /// <summary>
     /// Dollar amount of discount points paid.

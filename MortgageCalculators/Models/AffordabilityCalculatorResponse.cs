@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Output model providing an affordability summary including payments, ratios, values, and amortization.
 /// </summary>
-public class AffordabilityResponse
+public class AffordabilityCalculatorResponse
 {
 	/// <summary>
 	/// Monthly principal and interest (P and I) payment amount.

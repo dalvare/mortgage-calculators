@@ -7,7 +7,7 @@ namespace MortgageCalculators.Validation.Validators;
 /// <summary>
 /// Validation rules for affordability calculation requests.
 /// </summary>
-public class AffordabilityRequestValidator : AbstractValidator<AffordabilityRequest>
+public class AffordabilityRequestValidator : AbstractValidator<AffordabilityCalculatorRequest>
 {
     /// <summary>
     /// Initializes validation rules ensuring inputs are within acceptable ranges and consistent.
@@ -18,7 +18,7 @@ public class AffordabilityRequestValidator : AbstractValidator<AffordabilityRequ
             .MustBeValidMonthlyIncome();
         RuleFor(x => x.TotalMonthlyIncome)
             .GreaterThan(x => x.TotalMonthlyExpenses)
-            .WithMessage(string.Format(ValidationMessages.GreaterThan, nameof(AffordabilityRequest.TotalMonthlyExpenses)));
+            .WithMessage(string.Format(ValidationMessages.GreaterThan, nameof(AffordabilityCalculatorRequest.TotalMonthlyExpenses)));
         RuleFor(x => x.TotalMonthlyExpenses).MustBePositive();
         RuleFor(x => x.DownPayment).MustBeValidDownPaymentPercentage();
         RuleFor(x => x.InterestRate).MustBeValidInterestRate();

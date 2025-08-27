@@ -3,7 +3,7 @@ namespace MortgageCalculators.Models;
 /// <summary>
 /// Response model containing monthly payment components and generated amortization.
 /// </summary>
-public class MonthlyPaymentResponse
+public class MonthlyPaymentCalculatorResponse
 {
     /// <summary>
     /// Monthly principal and interest payment amount.
