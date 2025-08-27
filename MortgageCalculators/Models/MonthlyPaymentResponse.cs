@@ -32,5 +32,5 @@ public class MonthlyPaymentResponse
     /// <summary>
     /// Full amortization schedule and totals.
     /// </summary>
-    public Amortization Amortization { get; set; }
+    public required Amortization Amortization { get; set; }
 }

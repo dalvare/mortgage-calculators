@@ -6,7 +6,7 @@ namespace MortgageCalculators.Models;
 public class AffordabilityResponse
 {
 	/// <summary>
-	/// Monthly principal and interest (P&I) payment amount.
+	/// Monthly principal and interest (P and I) payment amount.
 	/// </summary>
 	public decimal MonthlyPrincipalAndInterest { get; set; }
 	/// <summary>
@@ -22,7 +22,7 @@ public class AffordabilityResponse
 	/// </summary>
 	public decimal MonthlyPmi { get; set; }
 	/// <summary>
-	/// Total monthly housing payment (P&I + taxes + insurance + PMI).
+	/// Total monthly housing payment (P and I + taxes + insurance + PMI).
 	/// </summary>
 	public decimal MonthlyTotal { get; set; }
 	/// <summary>

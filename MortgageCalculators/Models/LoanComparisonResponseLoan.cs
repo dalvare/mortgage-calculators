@@ -28,5 +28,5 @@ public class LoanComparisonResponseLoan
     /// <summary>
     /// Full amortization schedule and totals for this loan scenario.
     /// </summary>
-    public Amortization Amortization { get; set; }
+    public required Amortization Amortization { get; set; }
 }
