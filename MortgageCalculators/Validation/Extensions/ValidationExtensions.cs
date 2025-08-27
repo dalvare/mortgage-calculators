@@ -116,6 +116,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minPoints, maxPoints));
     }
     
+    /// <summary>
+    /// Ensures monthly income lies within [0, 200000].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidMonthlyIncome<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -126,6 +132,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minIncome, maxIncome));
     }
     
+    /// <summary>
+    /// Ensures a down payment percentage lies within [0, 95].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidDownPaymentPercentage<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -136,6 +148,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
     }
     
+    /// <summary>
+    /// Ensures the front-end ratio lies within [5, 60].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidFrontRatio<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -146,6 +164,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
     }
     
+    /// <summary>
+    /// Ensures the back-end ratio lies within [5, 80].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidBackRatio<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -156,6 +180,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
     }
     
+    /// <summary>
+    /// Ensures the annual insurance amount lies within [200, 50000].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidAnnualInsurance<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -166,6 +196,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minInsurance, maxInsurance));
     }
     
+    /// <summary>
+    /// Ensures the annual taxes amount lies within [0, 200000].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidAnnualTaxes<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -176,6 +212,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minTaxes, maxTaxes));
     }
     
+    /// <summary>
+    /// Ensures the home value lies within [25000, 10000000].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidHomeValue<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -186,6 +228,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minValue, maxValue));
     }
     
+    /// <summary>
+    /// Ensures the origination fees percentage lies within [0, 5].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidOriginationFeesPercentage<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
@@ -196,6 +244,12 @@ public static class ValidationExtensions
             .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
     }
     
+    /// <summary>
+    /// Ensures the closing costs amount lies within [500, 100000].
+    /// </summary>
+    /// <typeparam name="T">Validated model type.</typeparam>
+    /// <param name="ruleBuilder">FluentValidation rule builder.</param>
+    /// <returns>Rule builder options for chaining.</returns>
     public static IRuleBuilderOptions<T, decimal> MustBeValidClosingCosts<T>(
         this IRuleBuilder<T, decimal> ruleBuilder)
     {
