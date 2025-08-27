@@ -39,21 +39,10 @@ public class LoanComparisonCalculator : MortgageCalculator, IMortgageCalculator<
 
 			loans.Add(loan);
 		}
-
-		var (leastExpensiveLoan, mostExpensiveLoan) = loans.Aggregate(
-			(Min: loans[0], Max: loans[0]),
-			(acc, loan) => (
-				loan.Amortization.TotalPayment < acc.Min.Amortization.TotalPayment ? loan : acc.Min,
-				loan.Amortization.TotalPayment > acc.Max.Amortization.TotalPayment ? loan : acc.Max
-			)
-		);
 		
-		var totalSavings = mostExpensiveLoan.Amortization.TotalPayment - leastExpensiveLoan.Amortization.TotalPayment;
-
 		return new LoanComparisonResponse
 		{
 			LoanAmount = request.LoanAmount.ToDollar(),
-			TotalSavings = totalSavings.ToDollar(),
 			Loans = loans
 		};
 	}

@@ -16,12 +16,12 @@ public class LoanComparisonRequestLoanValidator : AbstractValidator<LoanComparis
     {
         RuleFor(x => x.InterestRate).MustBeValidInterestRate();
         RuleFor(x => x.Term).MustBeValidLoanTerm();
-        RuleFor(x => x.OriginationFees).MustBePositive();
-        RuleFor(x => x.ClosingCosts).MustBePositive();
-        RuleFor(x => x.Points).MustBePositive();
+        RuleFor(x => x.OriginationFees).MustBeValidOriginationFeesPercentage();
+        RuleFor(x => x.ClosingCosts).MustBeValidClosingCosts();
+        RuleFor(x => x.Points).MustBeValidPoints();
         RuleFor(x => x.Pmi).MustBeValidPmi();
-        RuleFor(x => x.HomeValue).MustBePositive();
-        RuleFor(x => x.OriginationFees).MustBeValidPercent();
-        RuleFor(x => x.ClosingCosts).MustBePositive();
+        RuleFor(x => x.HomeValue).MustBeValidHomeValue();
+        RuleFor(x => x.OriginationFees).MustBeValidOriginationFeesPercentage();
+        RuleFor(x => x.ClosingCosts).MustBeValidClosingCosts();
     }
 }

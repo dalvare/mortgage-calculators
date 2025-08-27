@@ -14,7 +14,7 @@ public class LoanComparisonRequestValidator :  AbstractValidator<LoanComparisonR
     /// </summary>
     public LoanComparisonRequestValidator()
     {
-        RuleFor(x => x.LoanAmount).MustBePositive();
+        RuleFor(x => x.LoanAmount).MustBeValidLoanAmount();
         RuleForEach(x => x.Loans)
             .SetValidator(new LoanComparisonRequestLoanValidator());
         RuleFor(x => x.Loans)

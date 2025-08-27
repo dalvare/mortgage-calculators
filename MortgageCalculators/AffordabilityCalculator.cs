@@ -62,8 +62,6 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
             MonthlyInsurance = monthlyInsurance.ToDollar(),
             MonthlyPmi = monthlyPmi.ToDollar(),
             MonthlyTotal = (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi).ToDollar(),
-            MonthlyIncome = request.TotalMonthlyIncome.ToDollar(),
-            MonthlyExpenses = request.TotalMonthlyExpenses.ToDollar(),
             ActualFrontRatio = 100 * (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi) / request.TotalMonthlyIncome,
             ActualBackRatio = 100 * (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi + request.TotalMonthlyExpenses) / request.TotalMonthlyIncome,
             LoanAmount = loanAmount.ToDollar(),

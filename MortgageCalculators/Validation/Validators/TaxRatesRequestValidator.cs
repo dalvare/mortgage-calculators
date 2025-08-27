@@ -14,7 +14,9 @@ public class TaxRatesRequestValidator : AbstractValidator<TaxRatesRequest>
     /// </summary>
     public TaxRatesRequestValidator()
     {
-        RuleFor(x => x.StateTaxRate).MustBeValidPercent();
-        RuleFor(x => x.MarginalIncomeTaxRate).MustBeValidPercent();
+        RuleFor(x => x.StateTaxRate)
+            .InclusiveBetween(0, 15).WithMessage(string.Format(ValidationMessages.Range, 0, 15));
+        RuleFor(x => x.MarginalIncomeTaxRate)
+            .InclusiveBetween(0, 15).WithMessage(string.Format(ValidationMessages.Range, 0, 50));
     }
 }

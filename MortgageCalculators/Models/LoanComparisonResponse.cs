@@ -10,11 +10,7 @@ public class LoanComparisonResponse
     /// </summary>
     public decimal LoanAmount { get; set; }
     /// <summary>
-    /// Difference in total payments between the most and least expensive loan options.
-    /// </summary>
-    public decimal TotalSavings { get; set; }
-    /// <summary>
     /// Collection of results for each compared loan scenario.
     /// </summary>
-    public List<LoanComparisonResponseLoan> Loans { get; set; } = new List<LoanComparisonResponseLoan>();
+    public List<LoanComparisonResponseLoan> Loans { get; set; } = [];
 }

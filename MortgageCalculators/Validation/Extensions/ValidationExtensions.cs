@@ -115,4 +115,94 @@ public static class ValidationExtensions
             .InclusiveBetween(minPoints, maxPoints)
             .WithMessage(string.Format(ValidationMessages.Range, minPoints, maxPoints));
     }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidMonthlyIncome<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minIncome = 0;
+        const decimal maxIncome = 200000;
+        return ruleBuilder
+            .InclusiveBetween(minIncome, maxIncome)
+            .WithMessage(string.Format(ValidationMessages.Range, minIncome, maxIncome));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidDownPaymentPercentage<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minPercentage = 0;
+        const decimal maxPercentage = 95;
+        return ruleBuilder
+            .InclusiveBetween(minPercentage, maxPercentage)
+            .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidFrontRatio<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minPercentage = 5;
+        const decimal maxPercentage = 60;
+        return ruleBuilder
+            .InclusiveBetween(minPercentage, maxPercentage)
+            .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidBackRatio<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minPercentage = 5;
+        const decimal maxPercentage = 80;
+        return ruleBuilder
+            .InclusiveBetween(minPercentage, maxPercentage)
+            .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidAnnualInsurance<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minInsurance = 200;
+        const decimal maxInsurance = 50000;
+        return ruleBuilder
+            .InclusiveBetween(minInsurance, maxInsurance)
+            .WithMessage(string.Format(ValidationMessages.Range, minInsurance, maxInsurance));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidAnnualTaxes<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minTaxes = 0;
+        const decimal maxTaxes = 200000;
+        return ruleBuilder
+            .InclusiveBetween(minTaxes, maxTaxes)
+            .WithMessage(string.Format(ValidationMessages.Range, minTaxes, maxTaxes));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidHomeValue<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minValue = 25000;
+        const decimal maxValue = 10000000;
+        return ruleBuilder
+            .InclusiveBetween(minValue, maxValue)
+            .WithMessage(string.Format(ValidationMessages.Range, minValue, maxValue));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidOriginationFeesPercentage<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minPercentage = 0;
+        const decimal maxPercentage = 5;
+        return ruleBuilder
+            .InclusiveBetween(minPercentage, maxPercentage)
+            .WithMessage(string.Format(ValidationMessages.Range, minPercentage, maxPercentage));
+    }
+    
+    public static IRuleBuilderOptions<T, decimal> MustBeValidClosingCosts<T>(
+        this IRuleBuilder<T, decimal> ruleBuilder)
+    {
+        const decimal minValue = 500;
+        const decimal maxValue = 100000;
+        return ruleBuilder
+            .InclusiveBetween(minValue, maxValue)
+            .WithMessage(string.Format(ValidationMessages.Range, minValue, maxValue));
+    }
 }

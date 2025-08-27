@@ -47,6 +47,84 @@ public class RefinanceCalculatorTests
     }
     
     [Fact]
+    public void Calculate_ShouldReturnCorrectResponse_WhenZeroYearsBeforeSaleProvided()
+    {
+        // Arrange
+        var request = new RefinanceRequest
+        {
+            HomeValue = 400000m,
+            CurrentLoan = new RefinanceCurrentLoanRequest
+            {
+                OriginalLoanAmount = 320000m,
+                InterestRate = 7m,
+                Term = 30,
+                Pmi = 0.5m,
+                MonthsPaid = 24
+            },
+            RefinanceLoan = new RefinanceRefinanceLoanRequest
+            {
+                InterestRate = 5.750m,
+                Term = 15,
+                Points = 1.0m,
+                OriginationFees = 0m,
+                ClosingCosts = 1200m,
+                YearsBeforeSale = 0,
+            },
+            TaxRates = new TaxRatesRequest
+            {
+                MarginalIncomeTaxRate = 2.0m , 
+                StateTaxRate = 5.0m
+            },
+        };
+        var calculator = new RefinanceCalculator();
+
+        // Act
+        var result = calculator.Calculate(request);
+
+        // Assert
+        Assert.True(result.RefinanceLoan.LoanAmount > 0);
+    }
+    
+    [Fact]
+    public void Calculate_ShouldReturnCorrectResponse_WhenZeroMonthsPaidProvided()
+    {
+        // Arrange
+        var request = new RefinanceRequest
+        {
+            HomeValue = 400000m,
+            CurrentLoan = new RefinanceCurrentLoanRequest
+            {
+                OriginalLoanAmount = 320000m,
+                InterestRate = 7m,
+                Term = 30,
+                Pmi = 0.5m,
+                MonthsPaid = 0
+            },
+            RefinanceLoan = new RefinanceRefinanceLoanRequest
+            {
+                InterestRate = 5.750m,
+                Term = 15,
+                Points = 1.0m,
+                OriginationFees = 0m,
+                ClosingCosts = 1200m,
+                YearsBeforeSale = 0,
+            },
+            TaxRates = new TaxRatesRequest
+            {
+                MarginalIncomeTaxRate = 2.0m , 
+                StateTaxRate = 5.0m
+            },
+        };
+        var calculator = new RefinanceCalculator();
+
+        // Act
+        var result = calculator.Calculate(request);
+
+        // Assert
+        Assert.True(result.RefinanceLoan.LoanAmount > 0);
+    }
+    
+    [Fact]
     public void Validate_ValidRefinanceCurrentLoanRequest()
     {
         var request = new RefinanceCurrentLoanRequest
@@ -93,7 +171,7 @@ public class RefinanceCalculatorTests
             Term = 30,
             Pmi = 0.5m,
             Points = 1.0m,
-            OriginationFees = 2000m,
+            OriginationFees = 1.1m,
             ClosingCosts = 3000m,
             YearsBeforeSale = 5
         };

@@ -14,7 +14,7 @@ public class AffordabilityResponse
 	/// </summary>
 	public decimal MonthlyTaxes { get; set; }
 	/// <summary>
-	/// Monthly homeowners insurance amount.
+	/// Monthly home owners insurance amount.
 	/// </summary>
 	public decimal MonthlyInsurance { get; set; }
 	/// <summary>
@@ -25,14 +25,6 @@ public class AffordabilityResponse
 	/// Total monthly housing payment (P&I + taxes + insurance + PMI).
 	/// </summary>
 	public decimal MonthlyTotal { get; set; }
-	/// <summary>
-	/// Gross monthly income used in the calculation.
-	/// </summary>
-	public decimal MonthlyIncome { get; set; }
-	/// <summary>
-	/// Other monthly expenses used in the back-end ratio.
-	/// </summary>
-	public decimal MonthlyExpenses { get; set; }
 	/// <summary>
 	/// Realized front-end ratio percentage.
 	/// </summary>
@@ -56,5 +48,5 @@ public class AffordabilityResponse
 	/// <summary>
 	/// Complete amortization including PMI tracking and totals.
 	/// </summary>
-	public Amortization Amortization { get; set; }
+	public required Amortization Amortization { get; set; }
 }

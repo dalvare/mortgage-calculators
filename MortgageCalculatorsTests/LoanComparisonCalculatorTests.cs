@@ -43,7 +43,6 @@ public class LoanComparisonCalculatorTests
         var response = calculator.Calculate(request);
 
         Assert.Equal(request.LoanAmount, response.LoanAmount);
-        Assert.True(response.TotalSavings > 0);
         Assert.Equal(2, response.Loans.Count);
     }
 
@@ -80,7 +79,7 @@ public class LoanComparisonCalculatorTests
 
         var response = calculator.Calculate(request);
 
-        Assert.Equal(0, response.TotalSavings);
+        Assert.Equal(response.Loans[0].Amortization.TotalPayment, response.Loans[1].Amortization.TotalPayment);
     }
     
     [Fact]

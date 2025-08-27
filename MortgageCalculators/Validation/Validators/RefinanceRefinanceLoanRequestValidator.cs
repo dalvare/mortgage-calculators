@@ -15,8 +15,8 @@ public class RefinanceRefinanceLoanRequestValidator : RefinanceLoanDetailsReques
     public RefinanceRefinanceLoanRequestValidator()
     {
         RuleFor(x => x.Points).MustBeValidPoints();
-        RuleFor(x => x.OriginationFees).MustBePositive();
-        RuleFor(x => x.ClosingCosts).MustBePositive();
+        RuleFor(x => x.OriginationFees).MustBeValidOriginationFeesPercentage();
+        RuleFor(x => x.ClosingCosts).MustBeValidClosingCosts();
         
         const int minYears = 0;
         const int maxYears = 30;
