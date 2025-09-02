@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <PackageId>MortgageCalculators</PackageId>
-        <PackageVersion>1.0.0-rc7</PackageVersion>
+        <PackageVersion>1.0.0-rc8</PackageVersion>
         <Authors>Dan Alvare</Authors>
         <Company>JerseyDev</Company>
         <Product>Mortgage Calculators</Product>
