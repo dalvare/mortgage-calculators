@@ -72,7 +72,7 @@ public class RefinanceCalculatorTests
             },
             TaxRates = new TaxRatesRequest
             {
-                MarginalIncomeTaxRate = 2.0m , 
+                MarginalIncomeTaxRate = 36.0m , 
                 StateTaxRate = 5.0m
             },
         };
@@ -111,7 +111,7 @@ public class RefinanceCalculatorTests
             },
             TaxRates = new TaxRatesRequest
             {
-                MarginalIncomeTaxRate = 2.0m , 
+                MarginalIncomeTaxRate = 28.0m , 
                 StateTaxRate = 5.0m
             },
         };
@@ -121,6 +121,47 @@ public class RefinanceCalculatorTests
         var result = calculator.Calculate(request);
 
         // Assert
+        Assert.True(result.RefinanceLoan.LoanAmount > 0);
+    }
+    
+    [Fact]
+    public void Calculate_WithLTVOver100()
+    {
+        // Arrange
+        var request = new RefinanceCalculatorRequest
+        {
+            HomeValue = 400000m,
+            CurrentLoan = new RefinanceCurrentLoanRequest
+            {
+                InterestRate = 6.25m,
+                MonthsPaid = 4,
+                OriginalLoanAmount = 420000m,
+                Pmi = 4m,
+                Term = 30
+            },
+            RefinanceLoan = new RefinanceRefinanceLoanRequest
+            {
+                ClosingCosts = 500m,
+                InterestRate = 5.25m,
+                OriginationFees = 0m,
+                Pmi = 4m,
+                Points = 1.5m,
+                Term = 30,
+                YearsBeforeSale = 0
+            },
+            TaxRates = new TaxRatesRequest
+            {
+                MarginalIncomeTaxRate = 5.25m,
+                StateTaxRate = 5.3m
+            }
+        };
+        var calculator = new RefinanceCalculator();
+
+        // Act
+        var result = calculator.Calculate(request);
+
+        // Assert
+        Assert.NotNull(result);
         Assert.True(result.RefinanceLoan.LoanAmount > 0);
     }
     
@@ -204,5 +245,34 @@ public class RefinanceCalculatorTests
         result.ShouldHaveValidationErrorFor(r => r.OriginationFees);
         result.ShouldHaveValidationErrorFor(r => r.ClosingCosts);
         result.ShouldHaveValidationErrorFor(r => r.YearsBeforeSale);
+    }
+    
+    [Fact]
+    public void Validate_ValidRefinanceTaxRatesRequest()
+    {
+        var request = new TaxRatesRequest()
+        {
+            MarginalIncomeTaxRate = 36.0m,
+            StateTaxRate = 5.0m
+        };
+        var validator = new TaxRatesRequestValidator();
+
+        var result = validator.TestValidate(request);
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+    
+    [Fact]
+    public void Validate_InvalidRefinanceTaxRatesRequest()
+    {
+        var request = new TaxRatesRequest()
+        {
+            MarginalIncomeTaxRate = 51.0m,
+            StateTaxRate = 20.0m
+        };
+        var validator = new TaxRatesRequestValidator();
+
+        var result = validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(r => r.MarginalIncomeTaxRate);
+        result.ShouldHaveValidationErrorFor(r => r.StateTaxRate);
     }
 }

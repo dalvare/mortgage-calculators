@@ -158,7 +158,7 @@ public abstract class MortgageCalculator
 	/// <returns>True if PMI applies; otherwise false.</returns>
 	protected static bool DoesLoanHavePmi(decimal loanToValue, decimal annualPmi)
 	{
-		ValidatePercentage(loanToValue);
+		ValidateLoanToValue(loanToValue);
 		return loanToValue > PmiLtvThreshold && annualPmi > 0;
 	}
 	
@@ -172,20 +172,34 @@ public abstract class MortgageCalculator
 		return (amount / 100) * 100;
 	}
 	
-	private static bool IsValidPercentage(decimal percentage)
+	private static bool IsValidPercentage(decimal value, decimal min = 0, decimal max = 100)
 	{
-		return percentage is (>= 0 and <= 100);
+		return value >= min && value <= max;
 	}
 	
 	/// <summary>
-	/// Validates that a percentage is within the inclusive range [0, 100].
+	/// Validates that a percentage is within the given range.
+	/// </summary>
+	/// <param name="percentage">The percentage to validate.</param>
+	/// <param name="min">The minimum percentage to validate.</param>
+	/// <param name="max">The maximum percentage to validate.</param>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the percentage is outside the min/max range.</exception>
+	private static void ValidatePercentage(decimal percentage, decimal min = 0, decimal max = 100)
+	{
+		if (!IsValidPercentage(percentage, min, max))
+			throw new ArgumentOutOfRangeException(nameof(percentage), $"Percentage must be between {min} and {max}. {percentage} is invalid.");
+	}
+	
+	/// <summary>
+	/// Validates that a loan to value ratio is within the inclusive range [0, 200].
 	/// </summary>
 	/// <param name="percentage">The percentage to validate.</param>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when the percentage is outside [0,100].</exception>
-	private static void ValidatePercentage(decimal percentage)
+	private static void ValidateLoanToValue(decimal percentage)
 	{
-		if (!IsValidPercentage(percentage))
-			throw new ArgumentOutOfRangeException(nameof(percentage), "Percentage must be between 0 and 100.");
+		const decimal min = 0;
+		const decimal max = 200;
+		ValidatePercentage(percentage, min, max);
 	}
 	
 	/// <summary>

@@ -33,4 +33,8 @@ internal static class ValidationMessages
     /// Message indicating that at least two loans are required for comparison.
     /// </summary>
     public const string TwoLoansRequired = "At least 2 loans are required for comparison.";
+    /// <summary>
+    /// Message indicating that the home value must be greater than or equal to the loan amount.
+    /// </summary>
+    public const string HomeValueGreaterThanLoanAmount = "Home value must be greater than or equal to the refinance loan amount.";
 }

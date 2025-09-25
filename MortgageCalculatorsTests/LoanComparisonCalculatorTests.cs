@@ -83,6 +83,41 @@ public class LoanComparisonCalculatorTests
     }
     
     [Fact]
+    public void Calculate_WhenLtvIsGreaterThan100()
+    {
+        var request = new LoanComparisonCalculatorRequest
+        {
+            LoanAmount = 400000,
+            Loans = [
+                new LoanComparisonCalculatorLoanRequest
+                {
+                    ClosingCosts = 500,
+                    HomeValue = 380000,
+                    InterestRate = 5.78m,
+                    OriginationFees = 0,
+                    Pmi = 0,
+                    Points = 0,
+                    Term = 30
+                },
+                new LoanComparisonCalculatorLoanRequest
+                {
+                    ClosingCosts = 500,
+                    HomeValue = 400000,
+                    InterestRate = 5.49m,
+                    OriginationFees = 0,
+                    Pmi = 0,
+                    Points = 0,
+                    Term = 30
+                }
+            ]
+        };
+
+        var calculator = new LoanComparisonCalculator();
+        var response = calculator.Calculate(request);
+        Assert.Equal(2, response.Loans.Count);
+    }
+    
+    [Fact]
     public void Validate_ValidLoanComparisonRequestLoan()
     {
         var loan = new LoanComparisonCalculatorLoanRequest
