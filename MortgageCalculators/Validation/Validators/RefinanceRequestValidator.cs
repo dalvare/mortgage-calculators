@@ -16,8 +16,8 @@ public class RefinanceRequestValidator : AbstractValidator<RefinanceCalculatorRe
     {
         RuleFor(x => x.HomeValue).MustBeValidHomeValue();
         RuleFor(x => x.HomeValue)
-            .GreaterThan(x => x.CurrentLoan.OriginalLoanAmount)
-            .WithMessage(ValidationMessages.HomeValueGreaterThanLoanAmount);
+            .GreaterThan(x => x.CurrentLoan.OriginalLoanAmount * 0.5m)
+            .WithMessage(ValidationMessages.HomeValueLessThanHalfLoanAmount);
         RuleFor(x => x.CurrentLoan).SetValidator(new RefinanceCurrentLoanRequestValidator());
         RuleFor(x => x.RefinanceLoan).SetValidator(new RefinanceRefinanceLoanRequestValidator());
         RuleFor(x => x.TaxRates).SetValidator(new TaxRatesRequestValidator());
