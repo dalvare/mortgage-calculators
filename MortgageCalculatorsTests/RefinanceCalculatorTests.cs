@@ -156,11 +156,14 @@ public class RefinanceCalculatorTests
             }
         };
         var calculator = new RefinanceCalculator();
-
+        var validator = new RefinanceRequestValidator();
+        
         // Act
         var result = calculator.Calculate(request);
-
+        var validationResult = validator.TestValidate(request);
+        
         // Assert
+        validationResult.ShouldNotHaveAnyValidationErrors();
         Assert.NotNull(result);
         Assert.True(result.RefinanceLoan.LoanAmount > 0);
     }
