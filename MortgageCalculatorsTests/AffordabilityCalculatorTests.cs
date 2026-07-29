@@ -190,6 +190,22 @@ public class AffordabilityCalculatorTests
         Assert.IsType<ArgumentOutOfRangeException>(exception);
     }
 
+    [Fact]
+    public void Calculate_ShouldThrow_WhenDownPaymentCoversTheEntireHomeValue()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        request.AnnualInsurance = 200;
+        request.DownPayment = 100;
+        var calculator = new AffordabilityCalculator();
+
+        // Act
+        var exception = Record.Exception(() => calculator.Calculate(request));
+
+        // Assert
+        Assert.IsType<ArgumentOutOfRangeException>(exception);
+    }
+
     /// <summary>
     /// The front-ratio allowance is 1000 * 5% = $50/mo and monthly insurance is 600 / 12 = $50, so the
     /// affordable principal and interest payment lands on exactly zero.

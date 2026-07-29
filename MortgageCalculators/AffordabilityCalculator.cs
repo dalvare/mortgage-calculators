@@ -23,6 +23,9 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
     /// </returns>
     public AffordabilityCalculatorResponse Calculate(AffordabilityCalculatorRequest calculatorRequest)
     {
+        if (calculatorRequest.DownPayment >= 100)
+            throw new ArgumentOutOfRangeException(nameof(calculatorRequest), "Down payment percentage must be less than 100.");
+
         var monthlyTaxes = calculatorRequest.AnnualTaxes / 12;
         var monthlyInsurance = calculatorRequest.AnnualInsurance / 12;
 
