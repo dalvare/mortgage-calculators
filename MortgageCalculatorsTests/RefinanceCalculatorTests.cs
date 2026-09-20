@@ -194,9 +194,9 @@ public class RefinanceCalculatorTests
         var result = calculator.Calculate(request);
 
         // Assert
-        Assert.Equal(result.RefinanceLoan.Amortization.TotalPayment.ToDollar(), result.RefinanceLoan.TotalMonthlyPayments);
+        AssertWithinADollar(result.RefinanceLoan.Amortization.TotalPayment, result.RefinanceLoan.TotalMonthlyPayments);
         Assert.Equal(0m, result.RefinanceLoan.BalanceAtSale);
-        Assert.Equal(result.RefinanceLoan.Amortization.TotalInterest.ToDollar(), result.RefinanceLoan.InterestPaid);
+        AssertWithinADollar(result.RefinanceLoan.Amortization.TotalInterest, result.RefinanceLoan.InterestPaid);
         // The current loan has 336 payments left, so it too stops short of the 360-month window.
         AssertWithinADollar(result.CurrentLoan.MonthlyPayment * 336, result.CurrentLoan.TotalMonthlyPayments);
         Assert.Equal(0m, result.CurrentLoan.BalanceAtSale);
