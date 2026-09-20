@@ -114,4 +114,97 @@ public class AffordabilityCalculatorTests
         result.ShouldHaveValidationErrorFor(r => r.BackRatio);
         result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome);
     }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenTaxesAndInsuranceConsumeTheEntirePayment()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome)
+            .WithErrorMessage(
+                "Monthly income and qualifying ratios must leave room for a principal and interest payment after taxes, insurance, and PMI.");
+    }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenTaxesAndInsuranceExceedThePayment()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        request.AnnualInsurance = 1200;
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome);
+    }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenPmiConsumesTheEntirePayment()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        request.AnnualInsurance = 200;
+        request.DownPayment = 5;
+        request.InterestRate = 1;
+        request.Pmi = 10;
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrow_WhenTaxesAndInsuranceConsumeTheEntirePayment()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        var calculator = new AffordabilityCalculator();
+
+        // Act
+        var exception = Record.Exception(() => calculator.Calculate(request));
+
+        // Assert
+        Assert.IsType<ArgumentOutOfRangeException>(exception);
+    }
+
+    [Fact]
+    public void Calculate_ShouldThrow_WhenTaxesAndInsuranceExceedThePayment()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        request.AnnualInsurance = 1200;
+        var calculator = new AffordabilityCalculator();
+
+        // Act
+        var exception = Record.Exception(() => calculator.Calculate(request));
+
+        // Assert
+        Assert.IsType<ArgumentOutOfRangeException>(exception);
+    }
+
+    /// <summary>
+    /// The front-ratio allowance is 1000 * 5% = $50/mo and monthly insurance is 600 / 12 = $50, so the
+    /// affordable principal and interest payment lands on exactly zero.
+    /// </summary>
+    private static AffordabilityCalculatorRequest FullyConsumedPaymentRequest() => new()
+    {
+        TotalMonthlyIncome = 1000,
+        TotalMonthlyExpenses = 0,
+        DownPayment = 20,
+        InterestRate = 6,
+        Term = 30,
+        Pmi = 0,
+        FrontRatio = 5,
+        BackRatio = 5,
+        AnnualTaxes = 0,
+        AnnualInsurance = 600
+    };
 }

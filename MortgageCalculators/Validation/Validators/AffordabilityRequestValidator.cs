@@ -28,5 +28,8 @@ public class AffordabilityRequestValidator : AbstractValidator<AffordabilityCalc
         RuleFor(x => x.BackRatio).MustBeValidBackRatio();
         RuleFor(x => x.AnnualTaxes).MustBeValidAnnualTaxes();
         RuleFor(x => x.AnnualInsurance).MustBeValidAnnualInsurance();
+        RuleFor(x => x.TotalMonthlyIncome)
+            .Must((request, _) => AffordabilityCalculator.CanFundPrincipalAndInterest(request))
+            .WithMessage(ValidationMessages.NoRoomForPrincipalAndInterest);
     }
 }

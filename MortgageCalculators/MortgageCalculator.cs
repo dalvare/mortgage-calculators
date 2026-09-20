@@ -36,7 +36,7 @@ public abstract class MortgageCalculator
 		var monthlyInterestRate = (decimal)CalculateMonthlyInterestRate(interest, annualPayments, annualCompounds);
 		return loanAmount * (monthlyInterestRate / (1 - (decimal)Math.Pow((double)(1 + monthlyInterestRate), -annualPayments * termInYears)));
 	}
-	
+
 	/// <summary>
 	/// Calculates the loan principal that corresponds to a given periodic payment.
 	/// </summary>
@@ -51,7 +51,7 @@ public abstract class MortgageCalculator
 	{
 		if (termInYears <= 0 || numOfAnnualPayments <= 0 || annualCompounds <= 0)
 			throw new ArgumentException("Term, payment frequency, and compounding frequency must be positive values.");
-		
+
 		var payment = (double)periodPayment;
 		var totalNumberOfPayments = termInYears * numOfAnnualPayments;
 		var paymentPeriodInterestRate = CalculateMonthlyInterestRate(interestRate, numOfAnnualPayments, annualCompounds);
@@ -71,6 +71,7 @@ public abstract class MortgageCalculator
 	/// <param name="homeValue">Original home value used for LTV and PMI determination.</param>
 	/// <param name="annualPmi">Annual PMI rate as a percentage. Zero disables PMI.</param>
 	/// <returns>An amortization object with schedule, totals, and metadata.</returns>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the home value is not greater than zero.</exception>
 	protected static Amortization CalculateAmortization(decimal principal, decimal rate, int periods, DateTime startDate, decimal homeValue, decimal annualPmi = 0)
 	{
 		var amortization = new Amortization
@@ -134,8 +135,12 @@ public abstract class MortgageCalculator
 	/// <param name="loanAmount">Current or initial loan balance.</param>
 	/// <param name="homeValue">Home value used as denominator.</param>
 	/// <returns>LTV as a percentage in the range [0, 100].</returns>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the home value is not greater than zero.</exception>
 	protected static decimal CalculateLoanToValue(decimal loanAmount, decimal homeValue)
 	{
+		if (homeValue <= 0)
+			throw new ArgumentOutOfRangeException(nameof(homeValue), "Home value must be greater than zero to calculate a loan to value ratio.");
+
 		return (loanAmount / homeValue) * 100;
 	}
 	
