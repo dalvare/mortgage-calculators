@@ -9,17 +9,20 @@ namespace MortgageCalculators.Validation.Validators;
 /// </summary>
 public class LoanComparisonRequestValidator :  AbstractValidator<LoanComparisonCalculatorRequest>
 {
+    private const int MinimumLoans = 2;
+
     /// <summary>
-    /// Initializes validation rules ensuring base loan amount and two comparable loan options.
+    /// Initializes validation rules ensuring a base loan amount and at least two comparable loan options.
     /// </summary>
     public LoanComparisonRequestValidator()
     {
         RuleFor(x => x.LoanAmount).MustBeValidLoanAmount();
-        RuleForEach(x => x.Loans)
-            .SetValidator(new LoanComparisonRequestLoanValidator());
         RuleFor(x => x.Loans)
+            .Cascade(CascadeMode.Stop)
             .NotNull()
-            .Must(loans => loans.Count == 2)
+            .Must(loans => loans.Count >= MinimumLoans)
             .WithMessage(ValidationMessages.TwoLoansRequired);
+        RuleForEach(x => x.Loans)
+            .SetValidator(request => new LoanComparisonRequestLoanValidator(request.LoanAmount));
     }
 }

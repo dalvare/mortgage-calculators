@@ -10,9 +10,9 @@ internal static class ValidationMessages
     /// </summary>
     public const string Range = "The value must be between {0} and {1}.";
     /// <summary>
-    /// Message for values that must be positive.
+    /// Message for values that must be zero or greater.
     /// </summary>
-    public const string PositiveValue = "The value must be greater than zero.";
+    public const string NonNegativeValue = "The value must be zero or greater.";
     /// <summary>
     /// Message alias indicating the value must be strictly greater than zero.
     /// </summary>

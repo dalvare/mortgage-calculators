@@ -21,7 +21,20 @@ public class LoanComparisonRequestLoanValidator : AbstractValidator<LoanComparis
         RuleFor(x => x.Points).MustBeValidPoints();
         RuleFor(x => x.Pmi).MustBeValidPmi();
         RuleFor(x => x.HomeValue).MustBeValidHomeValue();
-        RuleFor(x => x.OriginationFees).MustBeValidOriginationFeesPercentage();
-        RuleFor(x => x.ClosingCosts).MustBeValidClosingCosts();
+    }
+
+    /// <summary>
+    /// Initializes the field rules plus a check that the home value can carry the loan being compared.
+    /// </summary>
+    /// <param name="loanAmount">The loan amount shared by every scenario in the comparison.</param>
+    /// <remarks>
+    /// The shared calculator math rejects a loan-to-value ratio above 200%, so a scenario whose home value is not
+    /// more than half the loan amount would fail inside the calculator rather than here.
+    /// </remarks>
+    public LoanComparisonRequestLoanValidator(decimal loanAmount) : this()
+    {
+        RuleFor(x => x.HomeValue)
+            .GreaterThan(loanAmount * 0.5m)
+            .WithMessage(ValidationMessages.HomeValueLessThanHalfLoanAmount);
     }
 }
