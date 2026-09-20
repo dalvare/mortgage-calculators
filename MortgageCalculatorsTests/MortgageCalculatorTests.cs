@@ -1,4 +1,5 @@
 using MortgageCalculators;
+using MortgageCalculators.Extensions;
 using MortgageCalculators.Models;
 
 namespace MortgageCalculatorsTests;
@@ -158,10 +159,72 @@ public class MortgageCalculatorTests
         Assert.IsType<ArgumentException>(exception);
     }
 
+    [Theory]
+    [InlineData(26, 12, 552.69)]     // biweekly payments, monthly compounding
+    [InlineData(52, 12, 276.19)]     // weekly payments, monthly compounding
+    [InlineData(12, 2, 1189.65)]     // monthly payments, semi-annual compounding
+    [InlineData(12, 365, 1200.97)]   // monthly payments, daily compounding
+    [InlineData(12, 12, 1199.10)]    // the default
+    public void CalculatePayment_ShouldHonorPaymentAndCompoundingFrequencies(int annualPayments, int annualCompounds, decimal expected)
+    {
+        // Act
+        var result = TestCalculator.Payment(200000m, 6m, 30, annualPayments, annualCompounds);
+
+        // Assert
+        Assert.Equal(expected, result, 2);
+    }
+
+    [Theory]
+    [InlineData(250000, 6, 360)]
+    [InlineData(320000, 7, 360)]
+    [InlineData(30000, 25, 12)]
+    [InlineData(10000000, 1, 480)]
+    [InlineData(100000.126, 4.5, 180)]
+    public void CalculateAmortization_ShouldReconcileToTheCent(decimal principal, decimal rate, int periods)
+    {
+        // Act
+        var result = TestCalculator.Schedule(principal, rate, periods, principal * 2);
+
+        // Assert
+        Assert.Equal(principal.ToDollar(), result.Balance);
+        Assert.Equal(result.Balance, result.Schedule.Sum(row => row.Principal));
+        Assert.Equal(0m, result.Schedule.Last().Balance);
+        Assert.Equal(result.Schedule.Sum(row => row.Interest), result.TotalInterest);
+        Assert.Equal(result.Balance + result.TotalInterest, result.TotalPayment);
+        Assert.Equal(result.PeriodicPayment, result.PeriodicPayment.ToDollar());
+        Assert.All(result.Schedule, row =>
+        {
+            Assert.Equal(row.Interest, row.Interest.ToDollar());
+            Assert.Equal(row.Principal, row.Principal.ToDollar());
+            Assert.Equal(row.Balance, row.Balance.ToDollar());
+        });
+    }
+
+    [Fact]
+    public void CalculateAmortization_ShouldOnlyAdjustTheFinalRow()
+    {
+        // Arrange
+        var principal = 250000m;
+
+        // Act
+        var result = TestCalculator.Schedule(principal, 6m, 360, 500000m);
+
+        // Assert
+        // Every row but the last is principal = payment - interest to the cent.
+        Assert.All(result.Schedule.Take(359), row => Assert.Equal(result.PeriodicPayment, row.Principal + row.Interest));
+        // The displayed payment is rounded, so the final payment differs by at most half a cent per period.
+        var tolerance = 0.005m * 360 + 0.01m;
+        var last = result.Schedule.Last();
+        Assert.InRange(last.Principal + last.Interest, result.PeriodicPayment - tolerance, result.PeriodicPayment + tolerance);
+    }
+
     private sealed class TestCalculator : MortgageCalculator
     {
         public static decimal Payment(decimal loanAmount, decimal interest, int termInYears) =>
             CalculatePayment(loanAmount, interest, termInYears);
+
+        public static decimal Payment(decimal loanAmount, decimal interest, int termInYears, int annualPayments, int annualCompounds) =>
+            CalculatePayment(loanAmount, interest, termInYears, annualPayments, annualCompounds);
 
         public static decimal LoanAmount(decimal periodPayment, decimal interestRate, int termInYears) =>
             CalculateLoanAmount(periodPayment, interestRate, termInYears);

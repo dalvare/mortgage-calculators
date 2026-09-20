@@ -6,7 +6,7 @@ namespace MortgageCalculators.Models;
 public class Amortization
 {
 	/// <summary>
-	/// Initial loan balance used to create the schedule.
+	/// Initial loan balance used to create the schedule, in whole cents. The schedule's principal entries sum to it.
 	/// </summary>
 	public decimal Balance { get; set; }
 	/// <summary>
@@ -18,15 +18,16 @@ public class Amortization
 	/// </summary>
 	public int Periods { get; set; }
 	/// <summary>
-	/// Constant periodic principal and interest payment.
+	/// Constant periodic principal and interest payment, rounded to cents. The final payment differs by the few
+	/// cents needed to bring the balance to exactly zero.
 	/// </summary>
 	public decimal PeriodicPayment { get; set; }
 	/// <summary>
-	/// Total interest paid over the schedule.
+	/// Total interest paid over the schedule: the sum of the schedule's interest entries.
 	/// </summary>
 	public decimal TotalInterest { get; set; }
 	/// <summary>
-	/// Total of all payments (principal + interest) over the schedule.
+	/// Total of all payments over the schedule: the initial balance plus <see cref="TotalInterest"/>.
 	/// </summary>
 	public decimal TotalPayment { get; set; }
 	/// <summary>
