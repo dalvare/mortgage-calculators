@@ -50,7 +50,7 @@ public static class ValidationExtensions
     {
         return ruleBuilder
             .GreaterThanOrEqualTo(0)
-            .WithMessage(ValidationMessages.PositiveValue);
+            .WithMessage(ValidationMessages.NonNegativeValue);
     }
     
     /// <summary>

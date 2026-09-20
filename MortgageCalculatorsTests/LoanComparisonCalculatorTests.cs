@@ -115,7 +115,147 @@ public class LoanComparisonCalculatorTests
         var calculator = new LoanComparisonCalculator();
         var response = calculator.Calculate(request);
         Assert.Equal(2, response.Loans.Count);
+        _validator.TestValidate(request).ShouldNotHaveAnyValidationErrors();
     }
+
+    [Fact]
+    public void Calculate_ShouldSucceed_AtTheHighestLoanToValueTheValidatorAccepts()
+    {
+        // Arrange: a home value one cent above half the loan amount is the most underwater scenario allowed.
+        var request = ValidRequest();
+        request.LoanAmount = 250000m;
+        request.Loans[0].HomeValue = 125000.01m;
+        request.Loans[1].HomeValue = 125000.01m;
+        var calculator = new LoanComparisonCalculator();
+
+        // Act
+        _validator.TestValidate(request).ShouldNotHaveAnyValidationErrors();
+        var response = calculator.Calculate(request);
+
+        // Assert
+        Assert.Equal(2, response.Loans.Count);
+    }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenHomeValueCannotCarryTheLoanAmount()
+    {
+        // Arrange: a $250k loan against a $120k home is a 208% LTV, which the calculator would reject.
+        var request = ValidRequest();
+        request.LoanAmount = 250000m;
+        request.Loans[0].HomeValue = 120000m;
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor("Loans[0].HomeValue")
+            .WithErrorMessage("Home value must be greater than half of the loan amount.");
+        result.ShouldNotHaveValidationErrorFor("Loans[1].HomeValue");
+    }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenHomeValueIsExactlyHalfTheLoanAmount()
+    {
+        // Arrange
+        var request = ValidRequest();
+        request.LoanAmount = 250000m;
+        request.Loans[0].HomeValue = 125000m;
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor("Loans[0].HomeValue");
+    }
+
+    [Fact]
+    public void Validate_ShouldReportError_WhenLoansIsNull()
+    {
+        // Arrange
+        var request = new LoanComparisonCalculatorRequest { LoanAmount = 300000m, Loans = null! };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(r => r.Loans);
+    }
+
+    [Fact]
+    public void Validate_ShouldAcceptMoreThanTwoLoans()
+    {
+        // Arrange
+        var request = ValidRequest();
+        request.Loans.Add(new LoanComparisonCalculatorLoanRequest
+        {
+            InterestRate = 5.5m,
+            Term = 20,
+            Points = 0m,
+            OriginationFees = 0m,
+            ClosingCosts = 1000m,
+            HomeValue = 250000m,
+            Pmi = 0m
+        });
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+        Assert.Equal(3, new LoanComparisonCalculator().Calculate(request).Loans.Count);
+    }
+
+    [Fact]
+    public void Validate_ShouldReportEachInvalidLoanFieldOnce()
+    {
+        // Arrange
+        var loan = new LoanComparisonCalculatorLoanRequest
+        {
+            InterestRate = 5.0m,
+            Term = 30,
+            Points = 1.0m,
+            OriginationFees = 10.0m, // Invalid
+            ClosingCosts = 10.0m, // Invalid
+            HomeValue = 250000.0m,
+            Pmi = 0.5m
+        };
+        var validator = new LoanComparisonRequestLoanValidator();
+
+        // Act
+        var result = validator.TestValidate(loan);
+
+        // Assert
+        Assert.Equal(2, result.Errors.Count);
+        Assert.Single(result.Errors, e => e.PropertyName == nameof(LoanComparisonCalculatorLoanRequest.OriginationFees));
+        Assert.Single(result.Errors, e => e.PropertyName == nameof(LoanComparisonCalculatorLoanRequest.ClosingCosts));
+    }
+
+    private static LoanComparisonCalculatorRequest ValidRequest() => new()
+    {
+        LoanAmount = 200000,
+        Loans = [
+            new LoanComparisonCalculatorLoanRequest
+            {
+                InterestRate = 5,
+                Term = 30,
+                Points = 1,
+                OriginationFees = 1,
+                ClosingCosts = 3000,
+                HomeValue = 250000,
+                Pmi = 0.5m
+            },
+            new LoanComparisonCalculatorLoanRequest
+            {
+                InterestRate = 4,
+                Term = 30,
+                Points = 1,
+                OriginationFees = 1,
+                ClosingCosts = 3000,
+                HomeValue = 250000,
+                Pmi = 0.5m
+            }
+        ]
+    };
     
     [Fact]
     public void Validate_ValidLoanComparisonRequestLoan()
