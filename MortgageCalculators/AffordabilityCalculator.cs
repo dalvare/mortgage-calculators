@@ -16,11 +16,22 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
     /// Calculates the maximum affordable loan amount, home value, and related monthly payments
     /// based on the provided affordability request parameters.
     /// </summary>
+    /// <remarks>
+    /// The loan amount is rounded down to the nearest hundred. The home value and down payment are then derived
+    /// from the rounded loan and the requested down payment percentage, so the loan-to-value ratio that decides
+    /// PMI is exactly the one the caller asked for. Every monthly figure in the response describes the rounded
+    /// loan rather than the qualifying maximum it was solved from, so the payment, PMI, and amortization
+    /// schedule agree with the reported loan amount.
+    /// </remarks>
     /// <param name="calculatorRequest">The affordability request containing income, expenses, and loan details.</param>
     /// <returns>
     /// An <see cref="AffordabilityCalculatorResponse"/> with calculated loan amount, down payment, home value,
     /// monthly payments, and amortization schedule.
     /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the down payment percentage is 100 or more, or when the request cannot fund a loan of at
+    /// least one hundred dollars once taxes, insurance, and PMI are covered.
+    /// </exception>
     public AffordabilityCalculatorResponse Calculate(AffordabilityCalculatorRequest calculatorRequest)
     {
         if (calculatorRequest.DownPayment >= 100)
@@ -29,31 +40,32 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
         var monthlyTaxes = calculatorRequest.AnnualTaxes / 12;
         var monthlyInsurance = calculatorRequest.AnnualInsurance / 12;
 
-        var (maxPI, monthlyPmi) = SolveMaxPrincipalAndInterest(calculatorRequest);
-        if (maxPI <= 0)
+        var loanAmount = SolveMaxLoanAmount(calculatorRequest);
+        if (loanAmount <= 0)
             throw new ArgumentOutOfRangeException(nameof(calculatorRequest), UnaffordableMessage);
 
-        var loanAmount = CalculateLoanAmount(maxPI, calculatorRequest.InterestRate, calculatorRequest.Term);
         var homeValue = loanAmount / (1 - calculatorRequest.DownPayment / 100);
         var downPayment = homeValue - loanAmount;
 
-        loanAmount = RoundDownToNearestHundred(loanAmount);
-        downPayment = RoundDownToNearestHundred(downPayment);
-        homeValue = loanAmount + downPayment;
+        var monthlyPrincipalAndInterest = CalculatePayment(loanAmount, calculatorRequest.InterestRate, calculatorRequest.Term);
+        var monthlyPmi = DoesLoanHavePmi(CalculateLoanToValue(loanAmount, homeValue), calculatorRequest.Pmi)
+            ? CalculatePmiAnnualAmount(loanAmount, calculatorRequest.Pmi) / 12
+            : 0;
+        var monthlyTotal = monthlyPrincipalAndInterest + monthlyTaxes + monthlyInsurance + monthlyPmi;
 
         var totalPaymentPeriods = calculatorRequest.Term * 12;
         var amortization = CalculateAmortization(loanAmount, calculatorRequest.InterestRate, totalPaymentPeriods, DateTime.Now,
             homeValue, calculatorRequest.Pmi);
-        
+
         return new AffordabilityCalculatorResponse
         {
-            MonthlyPrincipalAndInterest = maxPI.ToDollar(),
+            MonthlyPrincipalAndInterest = monthlyPrincipalAndInterest.ToDollar(),
             MonthlyTaxes = monthlyTaxes.ToDollar(),
             MonthlyInsurance = monthlyInsurance.ToDollar(),
             MonthlyPmi = monthlyPmi.ToDollar(),
-            MonthlyTotal = (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi).ToDollar(),
-            ActualFrontRatio = 100 * (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi) / calculatorRequest.TotalMonthlyIncome,
-            ActualBackRatio = 100 * (maxPI + monthlyTaxes + monthlyInsurance + monthlyPmi + calculatorRequest.TotalMonthlyExpenses) / calculatorRequest.TotalMonthlyIncome,
+            MonthlyTotal = monthlyTotal.ToDollar(),
+            ActualFrontRatio = 100 * monthlyTotal / calculatorRequest.TotalMonthlyIncome,
+            ActualBackRatio = 100 * (monthlyTotal + calculatorRequest.TotalMonthlyExpenses) / calculatorRequest.TotalMonthlyIncome,
             LoanAmount = loanAmount.ToDollar(),
             DownPayment = downPayment.ToDollar(),
             HomeValue = homeValue.ToDollar(),
@@ -62,26 +74,38 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
     }
 
     /// <summary>
-    /// Determines whether the request leaves any room for a principal and interest payment once taxes,
-    /// insurance, and PMI are covered.
+    /// Determines whether the request can fund a loan of at least one hundred dollars once taxes, insurance,
+    /// and PMI are covered. This is the same test <see cref="Calculate"/> applies before producing a response.
     /// </summary>
+    /// <remarks>
+    /// Expects a request that already satisfies the field-level validation rules; out-of-range inputs may throw.
+    /// </remarks>
     /// <param name="request">The affordability request to test.</param>
-    /// <returns>True when a positive principal and interest payment is affordable; otherwise false.</returns>
-    internal static bool CanFundPrincipalAndInterest(AffordabilityCalculatorRequest request)
+    /// <returns>True when the request affords a loan; otherwise false.</returns>
+    internal static bool CanAffordLoan(AffordabilityCalculatorRequest request)
     {
-        // Structurally invalid requests are reported by the field-level rules; a validator must not throw.
-        if (request.Term <= 0 || request.InterestRate <= 0 || request.DownPayment is < 0 or >= 100)
-            return true;
+        return SolveMaxLoanAmount(request) > 0;
+    }
 
-        return SolveMaxPrincipalAndInterest(request).MaxPrincipalAndInterest > 0;
+    /// <summary>
+    /// Solves for the largest loan the request can support, rounded down to the nearest hundred.
+    /// Returns zero when the request affords no loan at all.
+    /// </summary>
+    private static decimal SolveMaxLoanAmount(AffordabilityCalculatorRequest request)
+    {
+        var maxPrincipalAndInterest = SolveMaxPrincipalAndInterest(request);
+        if (maxPrincipalAndInterest <= 0)
+            return 0;
+
+        var loanAmount = CalculateLoanAmount(maxPrincipalAndInterest, request.InterestRate, request.Term);
+        return RoundDownToNearestHundred(loanAmount);
     }
 
     /// <summary>
     /// Solves for the monthly principal and interest a borrower can support, net of the PMI the resulting
     /// loan would carry. A non-positive result means the request affords no loan at all.
     /// </summary>
-    private static (decimal MaxPrincipalAndInterest, decimal MonthlyPmi) SolveMaxPrincipalAndInterest(
-        AffordabilityCalculatorRequest request)
+    private static decimal SolveMaxPrincipalAndInterest(AffordabilityCalculatorRequest request)
     {
         var monthlyTaxes = request.AnnualTaxes / 12;
         var monthlyInsurance = request.AnnualInsurance / 12;
@@ -92,7 +116,7 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
 
         var maxPI = maxMonthlyPayment - monthlyTaxes - monthlyInsurance;
         if (maxPI <= 0)
-            return (maxPI, 0);
+            return maxPI;
 
         // First pass ignores PMI, then charges the PMI the resulting loan would carry against the payment.
         var loanAmount = CalculateLoanAmount(maxPI, request.InterestRate, request.Term);
@@ -101,6 +125,6 @@ public class AffordabilityCalculator : MortgageCalculator, IMortgageCalculator<A
         var loanToValue = CalculateLoanToValue(loanAmount, homeValue);
         var monthlyPmi = DoesLoanHavePmi(loanToValue, request.Pmi) ? (loanAmount * request.Pmi / 100) / 12 : 0;
 
-        return (maxPI - monthlyPmi, monthlyPmi);
+        return maxPI - monthlyPmi;
     }
 }

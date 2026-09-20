@@ -108,6 +108,56 @@ public class MortgageCalculatorTests
         Assert.Equal(0m, result.Schedule.Last().Balance);
     }
 
+    [Theory]
+    [InlineData(8339.58, 8300)]
+    [InlineData(303352.25, 303300)]
+    [InlineData(199.99, 100)]
+    [InlineData(1250.5, 1200)]
+    [InlineData(100, 100)]
+    [InlineData(0.37, 0)]
+    [InlineData(0, 0)]
+    [InlineData(-50, -100)]
+    public void RoundDownToNearestHundred_ShouldReturnNearestHundredAtOrBelow(decimal amount, decimal expected)
+    {
+        // Act
+        var result = TestCalculator.RoundDown(amount);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData(1_000_000, 30)]
+    [InlineData(6, 100_000)]
+    public void CalculateLoanAmount_ShouldThrowArgumentException_WhenRateAndTermAreTooLargeToSolve(decimal interestRate, int termInYears)
+    {
+        // Act
+        var exception = Record.Exception(() => TestCalculator.LoanAmount(1000m, interestRate, termInYears));
+
+        // Assert
+        Assert.IsType<ArgumentException>(exception);
+    }
+
+    [Fact]
+    public void CalculateLoanAmount_ShouldThrowArgumentException_WhenTermOverflowsThePeriodCount()
+    {
+        // Act
+        var exception = Record.Exception(() => TestCalculator.LoanAmount(1000m, 6m, int.MaxValue));
+
+        // Assert
+        Assert.IsType<ArgumentException>(exception);
+    }
+
+    [Fact]
+    public void CalculatePayment_ShouldThrowArgumentException_WhenTermOverflowsThePeriodCount()
+    {
+        // Act
+        var exception = Record.Exception(() => TestCalculator.Payment(200000m, 6m, int.MaxValue));
+
+        // Assert
+        Assert.IsType<ArgumentException>(exception);
+    }
+
     private sealed class TestCalculator : MortgageCalculator
     {
         public static decimal Payment(decimal loanAmount, decimal interest, int termInYears) =>
@@ -118,6 +168,9 @@ public class MortgageCalculatorTests
 
         public static decimal LoanToValue(decimal loanAmount, decimal homeValue) =>
             CalculateLoanToValue(loanAmount, homeValue);
+
+        public static decimal RoundDown(decimal amount) =>
+            RoundDownToNearestHundred(amount);
 
         public static Amortization Schedule(decimal principal, decimal rate, int periods, decimal homeValue) =>
             CalculateAmortization(principal, rate, periods, DateTime.Now, homeValue);
