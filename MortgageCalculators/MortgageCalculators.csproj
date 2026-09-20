@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
 
         <PackageId>MortgageCalculators</PackageId>
-        <PackageVersion>1.0.1</PackageVersion>
+        <PackageVersion>1.1.0</PackageVersion>
         <Authors>Dan Alvare</Authors>
         <Company>JerseyDev</Company>
         <Product>Mortgage Calculators</Product>
@@ -17,7 +17,7 @@
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>mortgage;calculator;affordability;loan;comparison;refinance;finance;real-estate</PackageTags>
-        <PackageReleaseNotes>Includes affordability calculator, loan comparison calculator, and refinance calculator with FluentValidation support.</PackageReleaseNotes>
+        <PackageReleaseNotes>Affordability requests that cannot fund a loan are rejected by validation instead of failing or returning negative figures; affordability loan amounts are now rounded down to the nearest hundred with the payment, PMI, and schedule derived from that rounded loan; shared calculator math guards its zero-rate, zero-term, and sub-year schedule paths.</PackageReleaseNotes>
 
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

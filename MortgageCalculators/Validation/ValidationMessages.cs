@@ -37,4 +37,8 @@ internal static class ValidationMessages
     /// Message indicating that the home value must be greater than half the loan amount.
     /// </summary>
     public const string HomeValueLessThanHalfLoanAmount = "Home value must be greater than half of the loan amount.";
+    /// <summary>
+    /// Message indicating that taxes, insurance, and PMI consume the entire qualifying payment.
+    /// </summary>
+    public const string NoRoomForPrincipalAndInterest = "Monthly income and qualifying ratios must leave room for a principal and interest payment after taxes, insurance, and PMI.";
 }

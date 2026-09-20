@@ -102,4 +102,27 @@ public class MonthlyPaymentCalculatorTests
         result.ShouldNotHaveValidationErrorFor(r => r.LoanAmount);
         result.ShouldHaveValidationErrorFor(r => r.Pmi);
     }
+
+    [Fact]
+    public void Calculate_ShouldThrow_WhenHomeValueIsZero()
+    {
+        // Arrange
+        var request = new MonthlyPaymentCalculatorRequest
+        {
+            LoanAmount = 280000m,
+            HomeValue = 0m,
+            InterestRate = 6.5m,
+            Term = 30,
+            AnnualTaxes = 3000m,
+            AnnualInsurance = 1500m,
+            Pmi = 0.5m
+        };
+        var calculator = new MonthlyPaymentCalculator();
+
+        // Act
+        var exception = Record.Exception(() => calculator.Calculate(request));
+
+        // Assert
+        Assert.IsType<ArgumentOutOfRangeException>(exception);
+    }
 }
