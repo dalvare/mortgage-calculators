@@ -14,9 +14,9 @@ public class AffordabilityCalculatorRequest
 	/// </summary>
 	public decimal TotalMonthlyExpenses { get; set; } // dollars
 	/// <summary>
-	/// Planned down payment amount in dollars.
+	/// Planned down payment as a percentage of the home value (e.g., 20 for 20%). Valid values are 0 to 95.
 	/// </summary>
-	public decimal DownPayment { get; set; } // dollars
+	public decimal DownPayment { get; set; } // percentage e.g. 20%
 	/// <summary>
 	/// Annual interest rate as a percentage (e.g., 6 for 6%).
 	/// </summary>

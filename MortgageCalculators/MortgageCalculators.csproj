@@ -17,7 +17,7 @@
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageTags>mortgage;calculator;affordability;loan;comparison;refinance;finance;real-estate</PackageTags>
-        <PackageReleaseNotes>Affordability requests that cannot fund a loan are rejected by validation instead of failing or returning negative figures; affordability loan amounts are now rounded down to the nearest hundred with the payment, PMI, and schedule derived from that rounded loan; shared calculator math guards its zero-rate, zero-term, and sub-year schedule paths.</PackageReleaseNotes>
+        <PackageReleaseNotes>Affordability requests that cannot fund a loan are rejected by validation instead of failing or returning negative figures, and affordability figures are rounded to the nearest hundred with the payment, PMI, and schedule derived from that loan. Refinance results respect the holding period and report closing costs on the refinance loan. Loan comparison validates each home value against the loan amount. Amortization schedules reconcile to the cent and all response figures are rounded. Shared math supports non-monthly payment and compounding frequencies and guards its zero and overflow paths.</PackageReleaseNotes>
 
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
