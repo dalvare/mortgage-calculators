@@ -31,10 +31,42 @@ public abstract class MortgageCalculator
 	/// <param name="annualPayments">Number of payments per year. Defaults to 12.</param>
 	/// <param name="annualCompounds">Number of compounding periods per year. Defaults to 12.</param>
 	/// <returns>The periodic payment amount covering principal and interest.</returns>
+	/// <exception cref="ArgumentException">Thrown when the term or any frequency parameter is not a positive value.</exception>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the interest rate is negative.</exception>
 	protected static decimal CalculatePayment(decimal loanAmount, decimal interest, int termInYears, int annualPayments = 12, int annualCompounds = 12)
 	{
-		var monthlyInterestRate = (decimal)CalculateMonthlyInterestRate(interest, annualPayments, annualCompounds);
-		return loanAmount * (monthlyInterestRate / (1 - (decimal)Math.Pow((double)(1 + monthlyInterestRate), -annualPayments * termInYears)));
+		if (termInYears <= 0 || annualPayments <= 0 || annualCompounds <= 0)
+			throw new ArgumentException("Term, payment frequency, and compounding frequency must be positive values.");
+
+		return CalculatePaymentForPeriods(loanAmount, interest, termInYears * annualPayments, annualPayments, annualCompounds);
+	}
+
+	/// <summary>
+	/// Calculates the constant periodic payment for an explicit number of payment periods.
+	/// </summary>
+	/// <param name="loanAmount">The principal loan amount.</param>
+	/// <param name="interest">Annual interest rate as a percentage (e.g., 6 for 6%).</param>
+	/// <param name="totalPeriods">Total number of payment periods over the life of the loan.</param>
+	/// <param name="annualPayments">Number of payments per year.</param>
+	/// <param name="annualCompounds">Number of compounding periods per year.</param>
+	/// <returns>The periodic payment amount covering principal and interest.</returns>
+	/// <exception cref="ArgumentException">Thrown when the period count or any frequency parameter is not a positive value.</exception>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the interest rate is negative.</exception>
+	private static decimal CalculatePaymentForPeriods(decimal loanAmount, decimal interest, int totalPeriods, int annualPayments = 12, int annualCompounds = 12)
+	{
+		if (totalPeriods <= 0 || annualPayments <= 0 || annualCompounds <= 0)
+			throw new ArgumentException("Period count, payment frequency, and compounding frequency must be positive values.");
+		if (interest < 0)
+			throw new ArgumentOutOfRangeException(nameof(interest), "Interest rate cannot be negative.");
+
+		var periodicInterestRate = (decimal)CalculateMonthlyInterestRate(interest, annualPayments, annualCompounds);
+
+		// An interest-free loan amortizes in equal principal-only installments; the annuity formula
+		// divides by zero at a zero rate.
+		if (periodicInterestRate == 0)
+			return loanAmount / totalPeriods;
+
+		return loanAmount * (periodicInterestRate / (1 - (decimal)Math.Pow((double)(1 + periodicInterestRate), -totalPeriods)));
 	}
 
 	/// <summary>
@@ -47,14 +79,21 @@ public abstract class MortgageCalculator
 	/// <param name="annualCompounds">Number of compounding periods per year. Defaults to 12.</param>
 	/// <returns>The calculated principal amount.</returns>
 	/// <exception cref="ArgumentException">Thrown when any frequency parameter is not a positive value.</exception>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the interest rate is negative.</exception>
 	protected static decimal CalculateLoanAmount(decimal periodPayment, decimal interestRate, int termInYears, int numOfAnnualPayments = 12, int annualCompounds = 12)
 	{
 		if (termInYears <= 0 || numOfAnnualPayments <= 0 || annualCompounds <= 0)
 			throw new ArgumentException("Term, payment frequency, and compounding frequency must be positive values.");
+		if (interestRate < 0)
+			throw new ArgumentOutOfRangeException(nameof(interestRate), "Interest rate cannot be negative.");
 
 		var payment = (double)periodPayment;
 		var totalNumberOfPayments = termInYears * numOfAnnualPayments;
 		var paymentPeriodInterestRate = CalculateMonthlyInterestRate(interestRate, numOfAnnualPayments, annualCompounds);
+
+		// At a zero rate every installment is pure principal, and the annuity formula collapses to 0/0.
+		if (paymentPeriodInterestRate == 0)
+			return periodPayment * totalNumberOfPayments;
 
 		var loanAmount = payment * (Math.Pow(1 + paymentPeriodInterestRate, totalNumberOfPayments) - 1) / (paymentPeriodInterestRate * Math.Pow(1 + paymentPeriodInterestRate, totalNumberOfPayments));
 
@@ -71,6 +110,7 @@ public abstract class MortgageCalculator
 	/// <param name="homeValue">Original home value used for LTV and PMI determination.</param>
 	/// <param name="annualPmi">Annual PMI rate as a percentage. Zero disables PMI.</param>
 	/// <returns>An amortization object with schedule, totals, and metadata.</returns>
+	/// <exception cref="ArgumentException">Thrown when the period count is not a positive value.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when the home value is not greater than zero.</exception>
 	protected static Amortization CalculateAmortization(decimal principal, decimal rate, int periods, DateTime startDate, decimal homeValue, decimal annualPmi = 0)
 	{
@@ -79,7 +119,7 @@ public abstract class MortgageCalculator
 			Balance = principal,
 			PeriodicInterest = (rate / 100) / 12,
 			Periods = periods,
-			PeriodicPayment = CalculatePayment(principal, rate, periods / 12),
+			PeriodicPayment = CalculatePaymentForPeriods(principal, rate, periods),
 			TotalInterest = 0,
 			TotalPayment = 0,
 			StartDate = startDate,
