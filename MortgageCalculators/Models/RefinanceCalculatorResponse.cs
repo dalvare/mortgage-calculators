@@ -8,11 +8,11 @@ public class RefinanceCalculatorResponse
     /// <summary>
     /// Metrics and amortization for the current (original) loan.
     /// </summary>
-    public required RefinanceLoanResponse CurrentLoan { get; set; }
+    public required CurrentRefinanceLoanResponse CurrentLoan { get; set; }
     /// <summary>
-    /// Metrics and amortization for the proposed refinance loan.
+    /// Metrics, closing costs, and amortization for the proposed refinance loan.
     /// </summary>
-    public required RefinanceLoanResponse RefinanceLoan { get; set; }
+    public required RefinanceRefinanceLoanResponse RefinanceLoan { get; set; }
     /// <summary>
     /// Savings from lower monthly payments over the analysis period.
     /// </summary>
@@ -30,7 +30,7 @@ public class RefinanceCalculatorResponse
     /// </summary>
     public required decimal TotalLosses { get; set; }
     /// <summary>
-    /// Total closing costs incurred to refinance.
+    /// Total closing costs incurred to refinance: points, origination fees, and other closing costs.
     /// </summary>
     public required decimal TotalClosingCosts { get; set; }
     /// <summary>
@@ -52,11 +52,12 @@ public class RefinanceLoanResponse {
     /// </summary>
     public decimal MonthlyPayment { get; set; }
     /// <summary>
-    /// Total of all monthly payments made during the analysis period.
+    /// Total of the monthly payments made during the analysis period. Payments stop once the loan is paid off,
+    /// so this never exceeds the payment multiplied by the number of payments remaining on the loan.
     /// </summary>
     public decimal TotalMonthlyPayments { get; set; }
     /// <summary>
-    /// Remaining balance at the time of sale.
+    /// Remaining balance at the time of sale. Zero when the loan is paid off before the sale.
     /// </summary>
     public decimal BalanceAtSale { get; set; }
     /// <summary>
@@ -67,10 +68,6 @@ public class RefinanceLoanResponse {
     /// Estimated tax savings resulting from interest paid.
     /// </summary>
     public decimal TaxSavings { get; set; }
-    /// <summary>
-    /// Discount points paid at closing.
-    /// </summary>
-    public decimal Points { get; set; }
     /// <summary>
     /// Complete amortization schedule and totals for this loan.
     /// </summary>
@@ -88,4 +85,17 @@ public class CurrentRefinanceLoanResponse : RefinanceLoanResponse
     public decimal RemainingBalance { get; set; }
 }
 
-
+/// <summary>
+/// Specific response details for the proposed refinance loan, including the costs of obtaining it.
+/// </summary>
+public class RefinanceRefinanceLoanResponse : RefinanceLoanResponse
+{
+    /// <summary>
+    /// Dollar cost of the discount points paid to obtain the refinance loan.
+    /// </summary>
+    public decimal Points { get; set; }
+    /// <summary>
+    /// Dollar cost of the origination fees paid to obtain the refinance loan.
+    /// </summary>
+    public decimal OriginationFees { get; set; }
+}
