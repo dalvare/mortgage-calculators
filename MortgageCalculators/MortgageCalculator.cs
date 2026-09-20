@@ -16,10 +16,15 @@ public abstract class MortgageCalculator
 	/// <param name="annualPayments">Number of payments made each year (typically 12 for monthly).</param>
 	/// <param name="annualCompounds">Number of compounding periods per year (typically 12 for monthly compounding).</param>
 	/// <returns>The periodic interest rate as a decimal per payment period.</returns>
+	/// <remarks>
+	/// The exponent is the number of compounding periods per payment period, which is fractional whenever the two
+	/// frequencies differ (12 / 26 for biweekly payments on monthly compounding), so it must not be integer division.
+	/// </remarks>
 	private static double CalculateMonthlyInterestRate(decimal interestRate, int annualPayments, int annualCompounds)
 	{
 		var adjustedInterest = interestRate / 100 / annualCompounds;
-		return Math.Pow((double)(1 + adjustedInterest), (annualCompounds / annualPayments)) - 1;
+		var compoundsPerPayment = (double)annualCompounds / annualPayments;
+		return Math.Pow((double)(1 + adjustedInterest), compoundsPerPayment) - 1;
 	}
 	
 	/// <summary>
@@ -135,12 +140,14 @@ public abstract class MortgageCalculator
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when the home value is not greater than zero.</exception>
 	protected static Amortization CalculateAmortization(decimal principal, decimal rate, int periods, DateTime startDate, decimal homeValue, decimal annualPmi = 0)
 	{
+		var periodicPayment = CalculatePaymentForPeriods(principal, rate, periods);
+		var periodicInterest = (rate / 100) / 12;
 		var amortization = new Amortization
 		{
-			Balance = principal,
-			PeriodicInterest = (rate / 100) / 12,
+			Balance = principal.ToDollar(),
+			PeriodicInterest = periodicInterest,
 			Periods = periods,
-			PeriodicPayment = CalculatePaymentForPeriods(principal, rate, periods),
+			PeriodicPayment = periodicPayment.ToDollar(),
 			TotalInterest = 0,
 			TotalPayment = 0,
 			StartDate = startDate,
@@ -149,20 +156,31 @@ public abstract class MortgageCalculator
 		};
 
 		var balance = principal;
+		var principalPaid = 0m;
 		var hasPmi = DoesLoanHavePmi(CalculateLoanToValue(principal, homeValue), annualPmi);
 		var monthlyPmi = hasPmi ? CalculatePmiAnnualAmount(principal, annualPmi) / 12 : 0;
 		monthlyPmi = monthlyPmi.ToDollar();
 		for (var i = 0; i < periods; i++)
 		{
-			var interestAmount = balance * amortization.PeriodicInterest;
-			balance += interestAmount;
+			var interestAmount = (balance * periodicInterest).ToDollar();
 			var principalAmount = amortization.PeriodicPayment - interestAmount;
-			balance -= amortization.PeriodicPayment;
+			balance += balance * periodicInterest - periodicPayment;
+
+			// Rows are shown in cents (interest rounded, principal as the rounded payment less that interest) while
+			// the balance runs in exact arithmetic, so the shown principal drifts from the true principal by a few
+			// cents over a long schedule. The final row absorbs that drift so the schedule sums to the loan and
+			// ends at exactly zero.
+			var isLastPeriod = i == periods - 1;
+			if (isLastPeriod)
+			{
+				principalAmount = amortization.Balance - principalPaid;
+				balance = 0;
+			}
+			principalPaid += principalAmount;
 
 			var date = startDate.AddMonths(i);
 
 			amortization.TotalInterest += interestAmount;
-			amortization.TotalPayment += amortization.PeriodicPayment;
 
 			var paymentHasPmi = false;
 			if (monthlyPmi > 0 && balance > 0)
@@ -176,8 +194,8 @@ public abstract class MortgageCalculator
 			
 			var data = new AmortizationSchedule
 			{
-				Interest = interestAmount.ToDollar(),
-				Principal = principalAmount.ToDollar(),
+				Interest = interestAmount,
+				Principal = principalAmount,
 				Balance = balance.ToDollar(),
 				Date = date,
 				Pmi = paymentHasPmi ? monthlyPmi : 0
@@ -186,6 +204,7 @@ public abstract class MortgageCalculator
 			amortization.Schedule.Add(data);
 		}
 
+		amortization.TotalPayment = amortization.Balance + amortization.TotalInterest;
 		amortization.EndDate = amortization.Schedule.Last().Date;
 		return amortization;
 	}
@@ -195,7 +214,7 @@ public abstract class MortgageCalculator
 	/// </summary>
 	/// <param name="loanAmount">Current or initial loan balance.</param>
 	/// <param name="homeValue">Home value used as denominator.</param>
-	/// <returns>LTV as a percentage in the range [0, 100].</returns>
+	/// <returns>LTV as a percentage; may exceed 100 for an underwater loan.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Thrown when the home value is not greater than zero.</exception>
 	protected static decimal CalculateLoanToValue(decimal loanAmount, decimal homeValue)
 	{
@@ -263,7 +282,7 @@ public abstract class MortgageCalculator
 	/// Validates that a loan to value ratio is within the inclusive range [0, 200].
 	/// </summary>
 	/// <param name="percentage">The percentage to validate.</param>
-	/// <exception cref="ArgumentOutOfRangeException">Thrown when the percentage is outside [0,100].</exception>
+	/// <exception cref="ArgumentOutOfRangeException">Thrown when the percentage is outside [0, 200].</exception>
 	private static void ValidateLoanToValue(decimal percentage)
 	{
 		const decimal min = 0;

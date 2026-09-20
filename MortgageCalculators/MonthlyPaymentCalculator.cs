@@ -24,23 +24,9 @@ public class MonthlyPaymentCalculator : MortgageCalculator, IMortgageCalculator<
 		var monthlyPrincipalAndInterest = CalculatePayment(calculatorRequest.LoanAmount, calculatorRequest.InterestRate, calculatorRequest.Term);
 		decimal[] payments = [ monthlyPrincipalAndInterest, monthlyTaxes, monthlyInsurance, monthlyPmi ];
 		var monthlyPayment = payments.Sum();
-		var monthsWithPmi = 0;
 
+		// The schedule decides PMI per row from the loan-to-value ratio as the balance falls.
 		var amortization = CalculateAmortization(calculatorRequest.LoanAmount, calculatorRequest.InterestRate, calculatorRequest.Term * 12, DateTime.Now, calculatorRequest.HomeValue, calculatorRequest.Pmi);
-
-		foreach (var (schedule, i) in amortization.Schedule.Select((s, i) => (s, i)))
-		{
-			var ltv = CalculateLoanToValue(schedule.Balance, calculatorRequest.HomeValue);
-			if (ltv >= 80)
-			{
-				amortization.Schedule[i].Pmi = monthlyPmi;
-				monthsWithPmi++;
-			}
-			else
-			{
-				amortization.Schedule[i].Pmi = 0;
-			}
-		}
 
 		return new MonthlyPaymentCalculatorResponse
 		{
@@ -48,7 +34,7 @@ public class MonthlyPaymentCalculator : MortgageCalculator, IMortgageCalculator<
 			MonthlyPrincipalAndInterest = monthlyPrincipalAndInterest.ToDollar(),
 			MonthlyTaxes = monthlyTaxes.ToDollar(),
 			MonthlyInsurance = monthlyInsurance.ToDollar(),
-			LoanToValue = loanToValue,
+			LoanToValue = loanToValue.ToPercent(),
 			MonthlyPmi = monthlyPmi.ToDollar(),
 			Amortization = amortization
 		};

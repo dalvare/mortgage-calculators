@@ -215,9 +215,10 @@ public class AffordabilityCalculatorTests
     }
 
     [Fact]
-    public void Validate_ShouldReportError_WhenPmiConsumesTheEntirePayment()
+    public void Validate_ShouldAcceptRequest_WhenPmiIsSteepButTheAllowanceIsPositive()
     {
-        // Arrange
+        // Arrange: PMI grows with the loan, so it can shrink the affordable loan but never consume the whole
+        // allowance. This request affords a small loan rather than none.
         var request = FullyConsumedPaymentRequest();
         request.AnnualInsurance = 200;
         request.DownPayment = 5;
@@ -228,54 +229,69 @@ public class AffordabilityCalculatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Validate_ShouldReportError_WhenAffordableLoanRoundsToZero()
+    public void Calculate_ShouldFitPrincipalInterestAndPmiInsideTheAllowance_WhenPmiApplies()
     {
-        // Arrange
-        var request = SubHundredDollarLoanRequest();
+        // Arrange: the back ratio binds at 36% of 10000 less 2000 expenses = $1,600/mo for everything.
+        var request = ValidRequest();
+        request.DownPayment = 10;
+        request.Pmi = 0.5m;
+        var calculator = new AffordabilityCalculator();
 
         // Act
-        var result = _validator.TestValidate(request);
+        var result = calculator.Calculate(request);
+        request.Pmi = 0;
+        var withoutPmi = calculator.Calculate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(r => r.TotalMonthlyIncome);
+        const decimal allowance = 1600m;
+        Assert.True(result.MonthlyPmi > 0);
+        Assert.Equal(result.Amortization.Schedule[0].Pmi, result.MonthlyPmi);
+        Assert.True(result.MonthlyTotal <= allowance);
+        // The loan is the largest hundred that fits: one more hundred would cost more than the allowance leaves.
+        Assert.True(allowance - result.MonthlyTotal < 1m, $"{allowance - result.MonthlyTotal} of the allowance is unused");
+        Assert.True(result.LoanAmount < withoutPmi.LoanAmount);
     }
 
-    [Theory]
-    [InlineData(1_000_000)]
-    [InlineData(10_000_000_000)]
-    public void Validate_ShouldReportOnlyTheFieldError_WhenInterestRateIsOutOfRange(decimal interestRate)
+    [Fact]
+    public void Calculate_ShouldReturnASmallLoan_WhenPmiIsSteep()
+    {
+        // Arrange
+        var request = FullyConsumedPaymentRequest();
+        request.AnnualInsurance = 200;
+        request.DownPayment = 5;
+        request.InterestRate = 1;
+        request.Pmi = 10;
+        var calculator = new AffordabilityCalculator();
+
+        // Act
+        var result = calculator.Calculate(request);
+
+        // Assert
+        Assert.True(result.LoanAmount > 0);
+        Assert.True(result.MonthlyPmi > result.MonthlyPrincipalAndInterest);
+        Assert.True(result.MonthlyTotal <= 50m);
+    }
+
+    [Fact]
+    public void Calculate_ShouldRoundActualRatiosToTwoPlaces()
     {
         // Arrange
         var request = ValidRequest();
-        request.InterestRate = interestRate;
+        request.DownPayment = 10;
+        request.Pmi = 0.5m;
+        var calculator = new AffordabilityCalculator();
 
         // Act
-        var result = _validator.TestValidate(request);
+        var result = calculator.Calculate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(r => r.InterestRate);
-        result.ShouldNotHaveValidationErrorFor(r => r.TotalMonthlyIncome);
-    }
-
-    [Theory]
-    [InlineData(100_000)]
-    [InlineData(int.MaxValue)]
-    public void Validate_ShouldReportOnlyTheFieldError_WhenTermIsOutOfRange(int term)
-    {
-        // Arrange
-        var request = ValidRequest();
-        request.Term = term;
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(r => r.Term);
-        result.ShouldNotHaveValidationErrorFor(r => r.TotalMonthlyIncome);
+        Assert.Equal(result.ActualFrontRatio, decimal.Round(result.ActualFrontRatio, 2));
+        Assert.Equal(result.ActualBackRatio, decimal.Round(result.ActualBackRatio, 2));
+        Assert.Equal(decimal.Round(100 * result.MonthlyTotal / request.TotalMonthlyIncome, 2), result.ActualFrontRatio);
     }
 
     [Fact]

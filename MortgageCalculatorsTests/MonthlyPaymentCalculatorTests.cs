@@ -1,4 +1,5 @@
 ﻿using MortgageCalculators;
+using MortgageCalculators.Extensions;
 using MortgageCalculators.Models;
 using MortgageCalculators.Validation.Validators;
 using FluentValidation.TestHelper;
@@ -64,6 +65,32 @@ public class MonthlyPaymentCalculatorTests
         Assert.Equal(expectedMonthsWithPmi, result.Amortization.MonthsWithPmi);
         Assert.Equal(expectedMonthlyPmi, result.MonthlyPmi, 2);
         Assert.True(result.LoanToValue > 80);
+    }
+
+    [Fact]
+    public void Calculate_ShouldReportTheSamePmiInTheScheduleAsInTheSummary()
+    {
+        // Arrange: 0.5% of 250,000 is 1,250 a year, or 104.1666... a month.
+        var request = new MonthlyPaymentCalculatorRequest
+        {
+            LoanAmount = 250000m,
+            HomeValue = 280000m,
+            InterestRate = 6m,
+            Term = 30,
+            AnnualTaxes = 3000m,
+            AnnualInsurance = 1200m,
+            Pmi = 0.5m
+        };
+        var calculator = new MonthlyPaymentCalculator();
+
+        // Act
+        var result = calculator.Calculate(request);
+
+        // Assert
+        Assert.Equal(104.17m, result.MonthlyPmi);
+        Assert.Equal(result.MonthlyPmi, result.Amortization.Schedule[0].Pmi);
+        Assert.All(result.Amortization.Schedule, row => Assert.Equal(row.Pmi, row.Pmi.ToDollar()));
+        Assert.Equal(89.29m, result.LoanToValue);
     }
     
     [Fact]
